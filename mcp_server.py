@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-Agent Forge MCP Server
+Agent Forge Community MCP Server
 
-A FastMCP-based server that exposes Agent Forge agents as MCP tools
+A FastMCP-based server that exposes Agent Forge community tier agents as MCP tools
 for Claude Desktop and other MCP clients.
+
+This server includes only open source community agents.
+Premium agents are available in Professional and Enterprise tiers.
 """
 
 import asyncio
@@ -18,19 +21,19 @@ except ImportError:
     print("FastMCP not installed. Install with: pip install fastmcp")
     exit(1)
 
-# Import Agent Forge components
+# Import Agent Forge community tier components only
 from examples.simple_navigation_agent import SimpleNavigationAgent
-from examples.nmkr_auditor_agent import NMKRAuditorAgent
-from examples.data_compiler_agent import DataCompilerAgent
 from examples.text_extraction_agent import EnhancedTextExtractionAgent
 from examples.validation_agent import EnhancedValidationAgent
+from examples.page_scraper_agent import PageScraperAgent
+from examples.documentation_manager_agent import DocumentationManagerAgent
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create MCP server
-mcp = FastMCP("Agent Forge")
+mcp = FastMCP("Agent Forge Community")
 
 @mcp.tool()
 async def navigate_website(
@@ -50,25 +53,25 @@ async def navigate_website(
         Dictionary containing extracted data and execution metadata
     """
     try:
-        logger.info(f"Navigating to {url} with target: {extraction_target}")
+        logger.info(f"Navigating to website: {url}")
         
         async with SimpleNavigationAgent(
             url=url,
-            extraction_target=extraction_target
+            extraction_target=extraction_target,
+            timeout=timeout
         ) as agent:
-            result = await agent.run()
+            navigation_data = await agent.run()
             
-        logger.info(f"Navigation completed successfully for {url}")
+        logger.info(f"Website navigation completed successfully")
         return {
             "success": True,
-            "data": result,
+            "navigation_data": navigation_data,
             "agent": "SimpleNavigationAgent",
-            "url": url,
-            "extraction_target": extraction_target
+            "url": url
         }
         
     except Exception as e:
-        logger.error(f"Navigation failed for {url}: {str(e)}")
+        logger.error(f"Website navigation failed: {str(e)}")
         return {
             "success": False,
             "error": str(e),
@@ -77,132 +80,39 @@ async def navigate_website(
         }
 
 @mcp.tool()
-async def generate_blockchain_proof(
-    url: str,
-    task_description: str,
-    nmkr_api_key: Optional[str] = None
-) -> Dict[str, Any]:
-    """
-    Generate NMKR Proof-of-Execution NFT for a web automation task.
-    
-    Args:
-        url: The target URL for the automation task
-        task_description: Description of the task being performed
-        nmkr_api_key: NMKR API key (optional, uses environment variable if not provided)
-    
-    Returns:
-        Dictionary containing blockchain proof data and verification information
-    """
-    try:
-        logger.info(f"Generating blockchain proof for task: {task_description}")
-        
-        config = {}
-        if nmkr_api_key:
-            config['nmkr_api_key'] = nmkr_api_key
-            
-        async with NMKRAuditorAgent(
-            url=url,
-            task_description=task_description,
-            config=config
-        ) as agent:
-            proof_package = await agent.run()
-            
-        logger.info(f"Blockchain proof generated successfully")
-        return {
-            "success": True,
-            "proof_package": proof_package,
-            "agent": "NMKRAuditorAgent",
-            "url": url,
-            "task_description": task_description
-        }
-        
-    except Exception as e:
-        logger.error(f"Blockchain proof generation failed: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e),
-            "agent": "NMKRAuditorAgent",
-            "url": url,
-            "task_description": task_description
-        }
-
-@mcp.tool()
-async def compile_data_from_sources(
-    sources: List[str],
-    compilation_strategy: str = "merge",
-    output_format: str = "json"
-) -> Dict[str, Any]:
-    """
-    Compile data from multiple web sources using Agent Forge data compilation.
-    
-    Args:
-        sources: List of URLs to collect data from
-        compilation_strategy: How to combine data ('merge', 'aggregate', 'compare')
-        output_format: Format for compiled data ('json', 'csv', 'markdown')
-    
-    Returns:
-        Dictionary containing compiled data and processing metadata
-    """
-    try:
-        logger.info(f"Compiling data from {len(sources)} sources")
-        
-        async with DataCompilerAgent(
-            sources=sources,
-            compilation_strategy=compilation_strategy,
-            output_format=output_format
-        ) as agent:
-            compiled_data = await agent.run()
-            
-        logger.info(f"Data compilation completed successfully")
-        return {
-            "success": True,
-            "compiled_data": compiled_data,
-            "agent": "DataCompilerAgent",
-            "sources": sources,
-            "compilation_strategy": compilation_strategy,
-            "output_format": output_format
-        }
-        
-    except Exception as e:
-        logger.error(f"Data compilation failed: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e),
-            "agent": "DataCompilerAgent",
-            "sources": sources
-        }
-
-@mcp.tool()
 async def extract_text_content(
     url: str,
-    content_type: str = "article",
-    include_metadata: bool = True
+    content_type: str = "all",
+    clean_text: bool = True,
+    timeout: int = 30
 ) -> Dict[str, Any]:
     """
-    Extract and process text content from web pages using intelligent parsing.
+    Extract and process text content from a website using advanced text extraction.
     
     Args:
-        url: The URL to extract content from
-        content_type: Type of content expected ('article', 'blog', 'news', 'documentation')
-        include_metadata: Whether to include metadata like author, date, etc.
+        url: The URL to extract text from
+        content_type: Type of content to extract ('all', 'paragraphs', 'headings', 'links')
+        clean_text: Whether to clean and normalize the extracted text
+        timeout: Timeout in seconds (default: 30)
     
     Returns:
-        Dictionary containing extracted text and metadata
+        Dictionary containing extracted text and processing metadata
     """
     try:
-        logger.info(f"Extracting text content from {url}")
+        logger.info(f"Extracting text content from: {url}")
         
         async with EnhancedTextExtractionAgent(
             url=url,
             content_type=content_type,
-            include_metadata=include_metadata
+            clean_text=clean_text,
+            timeout=timeout
         ) as agent:
-            extracted_content = await agent.run()
+            extracted_text = await agent.run()
             
         logger.info(f"Text extraction completed successfully")
         return {
             "success": True,
-            "content": extracted_content,
+            "extracted_text": extracted_text,
             "agent": "EnhancedTextExtractionAgent",
             "url": url,
             "content_type": content_type
@@ -218,43 +128,46 @@ async def extract_text_content(
         }
 
 @mcp.tool()
-async def validate_website_data(
+async def validate_page_quality(
     url: str,
-    validation_rules: Dict[str, Any],
-    check_accessibility: bool = True
+    validation_criteria: List[str] = None,
+    timeout: int = 30
 ) -> Dict[str, Any]:
     """
-    Validate website data, structure, and accessibility using Agent Forge validation.
+    Validate page quality and data integrity using comprehensive validation.
     
     Args:
         url: The URL to validate
-        validation_rules: Dictionary of validation rules to apply
-        check_accessibility: Whether to perform accessibility checks
+        validation_criteria: List of validation criteria to apply
+        timeout: Timeout in seconds (default: 30)
     
     Returns:
-        Dictionary containing validation results and recommendations
+        Dictionary containing validation results and quality metrics
     """
     try:
-        logger.info(f"Validating website data for {url}")
+        logger.info(f"Validating page quality for: {url}")
+        
+        if validation_criteria is None:
+            validation_criteria = ["accessibility", "performance", "content"]
         
         async with EnhancedValidationAgent(
             url=url,
-            validation_rules=validation_rules,
-            check_accessibility=check_accessibility
+            validation_criteria=validation_criteria,
+            timeout=timeout
         ) as agent:
             validation_results = await agent.run()
             
-        logger.info(f"Website validation completed successfully")
+        logger.info(f"Page validation completed successfully")
         return {
             "success": True,
             "validation_results": validation_results,
             "agent": "EnhancedValidationAgent",
             "url": url,
-            "rules_applied": validation_rules
+            "validation_criteria": validation_criteria
         }
         
     except Exception as e:
-        logger.error(f"Website validation failed: {str(e)}")
+        logger.error(f"Page validation failed: {str(e)}")
         return {
             "success": False,
             "error": str(e),
@@ -263,124 +176,171 @@ async def validate_website_data(
         }
 
 @mcp.tool()
-async def get_agent_info() -> Dict[str, Any]:
+async def scrape_page_content(
+    url: str,
+    content_selectors: List[str] = None,
+    wait_for: str = None,
+    timeout: int = 30
+) -> Dict[str, Any]:
     """
-    Get information about available Agent Forge agents and their capabilities.
+    Scrape page content using advanced web scraping with Playwright browser automation.
+    
+    Args:
+        url: The URL to scrape
+        content_selectors: CSS selectors for specific content to extract
+        wait_for: CSS selector or text to wait for before extraction
+        timeout: Timeout in seconds (default: 30)
     
     Returns:
-        Dictionary containing information about all available agents
+        Dictionary containing scraped content and extraction metadata
     """
-    agents_info = {
-        "SimpleNavigationAgent": {
-            "description": "Navigate websites and extract content with Steel Browser integration",
-            "capabilities": ["web_navigation", "content_extraction", "anti_detection"],
-            "supported_targets": ["title", "content", "metadata", "links"]
-        },
-        "NMKRAuditorAgent": {
-            "description": "Generate blockchain proofs of execution with NMKR NFT integration",
-            "capabilities": ["blockchain_proof", "nft_minting", "audit_trail", "cardano_integration"],
-            "supported_networks": ["cardano"]
-        },
-        "DataCompilerAgent": {
-            "description": "Compile and aggregate data from multiple web sources",
-            "capabilities": ["multi_source_data", "data_aggregation", "format_conversion"],
-            "supported_formats": ["json", "csv", "markdown"]
-        },
-        "EnhancedTextExtractionAgent": {
-            "description": "Intelligent text extraction and content processing",
-            "capabilities": ["content_parsing", "metadata_extraction", "text_processing"],
-            "supported_types": ["article", "blog", "news", "documentation"]
-        },
-        "EnhancedValidationAgent": {
-            "description": "Website validation, testing, and accessibility checking",
-            "capabilities": ["data_validation", "accessibility_testing", "structure_analysis"],
-            "validation_types": ["content", "structure", "accessibility", "performance"]
-        }
-    }
-    
-    return {
-        "success": True,
-        "framework": "Agent Forge",
-        "version": "1.0.0",
-        "total_agents": len(agents_info),
-        "agents": agents_info,
-        "features": {
-            "blockchain_integration": True,
-            "steel_browser": True,
-            "async_architecture": True,
-            "production_ready": True,
-            "testing_framework": "80+ tests"
-        }
-    }
-
-# Add a resource for Agent Forge documentation
-@mcp.resource("agent-forge://docs/{topic}")
-async def get_documentation(topic: str) -> str:
-    """Get Agent Forge documentation for specific topics."""
-    docs = {
-        "getting-started": """
-# Agent Forge - Getting Started
-
-Agent Forge is a production-ready framework for building autonomous AI web agents with blockchain integration.
-
-## Key Features:
-- AsyncContextAgent architecture with enterprise-grade reliability
-- Steel Browser integration for robust web automation
-- NMKR Proof-of-Execution NFT generation
-- Masumi Network AI Agent Economy participation
-- 80+ comprehensive test suite
-
-## Quick Start:
-1. Install: pip install agent-forge
-2. Import agents: from agent_forge.examples import SimpleNavigationAgent
-3. Use async context: async with SimpleNavigationAgent(url="...") as agent:
-4. Run agent: result = await agent.run()
-        """,
-        "blockchain": """
-# Blockchain Integration
-
-Agent Forge includes native blockchain integration for verifiable AI execution:
-
-## NMKR Proof-of-Execution:
-- Automatic NFT minting with CIP-25 metadata
-- Cryptographic proof generation
-- IPFS storage for audit logs
-- Cardano blockchain integration
-
-## Masumi Network:
-- AI Agent Economy participation
-- Payment verification and escrow
-- Revenue tracking and distribution
-- Smart contract automation
-        """,
-        "architecture": """
-# Agent Forge Architecture
-
-## AsyncContextAgent Foundation:
-- Production-grade async base class
-- Context manager support
-- Enterprise error handling
-- Advanced configuration management
-
-## Core Components:
-- CLI interface with agent discovery
-- Steel Browser integration
-- Blockchain services (NMKR, Masumi)
-- Shared utilities and testing framework
-        """
-    }
-    
-    return docs.get(topic, f"Documentation for '{topic}' not found. Available topics: {', '.join(docs.keys())}")
-
-def main():
-    """Main entry point for the MCP server."""
     try:
-        logger.info("Starting Agent Forge MCP Server...")
-        logger.info("Available tools: navigate_website, generate_blockchain_proof, compile_data_from_sources, extract_text_content, validate_website_data, get_agent_info")
-        mcp.run(transport="stdio")
+        logger.info(f"Scraping page content from: {url}")
+        
+        async with PageScraperAgent(
+            url=url,
+            content_selectors=content_selectors,
+            wait_for=wait_for,
+            timeout=timeout
+        ) as agent:
+            scraped_content = await agent.run()
+            
+        logger.info(f"Page scraping completed successfully")
+        return {
+            "success": True,
+            "scraped_content": scraped_content,
+            "agent": "PageScraperAgent",
+            "url": url,
+            "content_selectors": content_selectors
+        }
+        
     except Exception as e:
-        logger.error(f"Failed to start MCP server: {e}")
-        raise
+        logger.error(f"Page scraping failed: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "agent": "PageScraperAgent",
+            "url": url
+        }
+
+@mcp.tool()
+async def manage_documentation(
+    action: str,
+    target_path: str = None,
+    content: str = None,
+    format: str = "markdown"
+) -> Dict[str, Any]:
+    """
+    Manage and update documentation using automated documentation workflows.
+    
+    Args:
+        action: Documentation action to perform ('generate', 'update', 'validate')
+        target_path: Path to documentation file or directory
+        content: Content to add or update (for 'update' action)
+        format: Documentation format ('markdown', 'html', 'rst')
+    
+    Returns:
+        Dictionary containing documentation management results
+    """
+    try:
+        logger.info(f"Managing documentation: {action}")
+        
+        async with DocumentationManagerAgent(
+            action=action,
+            target_path=target_path,
+            content=content,
+            format=format
+        ) as agent:
+            doc_results = await agent.run()
+            
+        logger.info(f"Documentation management completed successfully")
+        return {
+            "success": True,
+            "documentation_results": doc_results,
+            "agent": "DocumentationManagerAgent",
+            "action": action,
+            "target_path": target_path
+        }
+        
+    except Exception as e:
+        logger.error(f"Documentation management failed: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "agent": "DocumentationManagerAgent",
+            "action": action
+        }
+
+# Premium features available in Professional and Enterprise tiers
+@mcp.tool()
+async def get_premium_features() -> Dict[str, Any]:
+    """
+    Get information about premium features available in Professional and Enterprise tiers.
+    
+    Returns:
+        Dictionary containing information about premium tier capabilities
+    """
+    return {
+        "message": "Premium features available in paid tiers",
+        "professional_tier": {
+            "price": "$99/month",
+            "features": [
+                "Advanced data compilation agents",
+                "Multi-agent coordination systems", 
+                "Enhanced web automation workflows",
+                "Premium support and documentation"
+            ]
+        },
+        "enterprise_tier": {
+            "price": "$999/month", 
+            "features": [
+                "Visual Intelligence Agent - Brand monitoring and competitive intelligence",
+                "Research Compiler Agent - M&A due diligence and market research",
+                "NMKR Blockchain integration - Proof-of-execution capabilities",
+                "Enterprise SSO, audit trails, compliance features",
+                "SLA-backed support and custom development"
+            ]
+        },
+        "learn_more": "https://agent-forge.ai/pricing"
+    }
+
+# Server diagnostics and health check
+@mcp.tool()
+async def server_health_check() -> Dict[str, Any]:
+    """
+    Check Agent Forge Community MCP Server health and status.
+    
+    Returns:
+        Dictionary containing server health information
+    """
+    return {
+        "status": "healthy",
+        "server": "Agent Forge Community MCP Server",
+        "version": "1.0.0",
+        "available_agents": [
+            "SimpleNavigationAgent",
+            "EnhancedTextExtractionAgent", 
+            "EnhancedValidationAgent",
+            "PageScraperAgent",
+            "DocumentationManagerAgent"
+        ],
+        "total_tools": 7,
+        "tier": "Community (Open Source)",
+        "upgrade_info": "Premium agents available in paid tiers"
+    }
 
 if __name__ == "__main__":
-    main()
+    print("🚀 Starting Agent Forge Community MCP Server...")
+    print("📋 Available Community Agents:")
+    print("   • Simple Navigation Agent - Basic web navigation")
+    print("   • Text Extraction Agent - Advanced text processing")
+    print("   • Validation Agent - Data quality and validation") 
+    print("   • Page Scraper Agent - Web scraping with Playwright")
+    print("   • Documentation Manager Agent - Automated documentation")
+    print()
+    print("💰 Premium agents available in Professional ($99/month) and Enterprise ($999/month) tiers")
+    print("🔗 Learn more: https://agent-forge.ai/pricing")
+    print()
+    
+    # Run the server
+    mcp.run()

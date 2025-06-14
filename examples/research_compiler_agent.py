@@ -34,7 +34,15 @@ from enum import Enum
 import hashlib
 
 # Agent Forge imports
-from agent_forge.core.agents.base import AsyncContextAgent
+import sys
+from pathlib import Path
+
+# Add the correct path for imports
+current_dir = Path(__file__).parent
+agent_forge_root = current_dir.parent
+sys.path.insert(0, str(agent_forge_root))
+
+from core.agents.base import AsyncContextAgent
 
 
 class DataSourceType(Enum):

@@ -2,6 +2,8 @@
 
 **Welcome to the Agent Forge Examples Library!** This comprehensive collection demonstrates the power and flexibility of the Agent Forge framework for building autonomous AI agents.
 
+> **📝 Note:** This is the complete internal examples library. For the public GitHub repository, see [README_PUBLIC.md](README_PUBLIC.md) which contains only community tier agents available in the open source release.
+
 ## 🎯 **Quick Start**
 
 ```bash

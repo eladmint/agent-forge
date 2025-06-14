@@ -1,6 +1,7 @@
 import { MainLayout } from "@/components/layout/main-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CodeBlock } from "@/components/ui/code-block"
 import Link from "next/link"
 import { 
   Globe, 
@@ -13,8 +14,7 @@ import {
   CheckCircle,
   TrendingUp,
   Users,
-  Clock,
-  Target
+  Clock
 } from "lucide-react"
 
 const useCases = [
@@ -249,21 +249,12 @@ export default function UseCasesPage() {
 
                 {/* Code Example */}
                 <div className="lg:w-1/2">
-                  <Card className="bg-background border-2">
-                    <CardHeader className="bg-muted/50 border-b">
-                      <CardTitle className="text-lg font-mono flex items-center space-x-2">
-                        <Target className="h-5 w-5 text-primary" />
-                        <span>Example Implementation</span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      <pre className="text-sm p-6 overflow-x-auto">
-                        <code className="text-foreground font-mono whitespace-pre">
-                          {useCase.codeExample}
-                        </code>
-                      </pre>
-                    </CardContent>
-                  </Card>
+                  <CodeBlock
+                    code={useCase.codeExample}
+                    title="Example Implementation"
+                    language="python"
+                    className="border-2"
+                  />
                 </div>
               </div>
             ))}

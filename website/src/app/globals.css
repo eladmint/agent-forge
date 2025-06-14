@@ -52,19 +52,44 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold;
+    font-weight: 600;
   }
   
   code {
-    @apply font-mono;
+    font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+}
+
+/* Fix gradient text rendering issues */
+@layer utilities {
+  .gradient-text-ancient-gold {
+    background: linear-gradient(90deg, #F59E0B 0%, #7C3AED 50%, #CD7F32 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    /* Fallback for browsers that don't support background-clip: text */
+    @supports not (background-clip: text) {
+      color: #F59E0B;
+    }
+  }
+  
+  .text-high-contrast {
+    color: #1a1a1a;
+  }
+  
+  .bg-white-solid {
+    background-color: #ffffff;
   }
 }
 

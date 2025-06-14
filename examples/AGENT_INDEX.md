@@ -2,6 +2,8 @@
 
 **Fast access to all Agent Forge examples with one-line descriptions and CLI commands.**
 
+> **🔒 Internal Reference:** This index contains all agents including premium and enterprise tiers. For public documentation, see [README_PUBLIC.md](README_PUBLIC.md).
+
 ---
 
 ## 🟢 **Beginner Agents** - Start Here

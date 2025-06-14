@@ -4,10 +4,11 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight, Github, Zap, Globe, Bot } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CodeBlock } from "@/components/ui/code-block"
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
+    <section className="relative overflow-hidden bg-white-solid">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
@@ -37,11 +38,11 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
           >
-            <span className="bg-gradient-to-r from-ancient-gold via-nuru-purple to-ancient-bronze bg-clip-text text-transparent">
+            <span className="gradient-text-ancient-gold">
               Sacred Smithy
             </span>
             <br />
-            <span className="text-foreground">of Digital Realm</span>
+            <span className="text-high-contrast font-bold">of Digital Realm</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -49,7 +50,8 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl lg:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed"
+            style={{ color: '#4a5568' }}
           >
             Production-ready Python framework for AI agents with built-in browser automation and MCP integration. 
             Where ancient forge-craft meets modern AI.
@@ -119,13 +121,8 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="mt-12 max-w-2xl mx-auto"
           >
-            <div className="bg-card border rounded-lg p-6 text-left">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-muted-foreground">Quick Start</span>
-                <Button variant="ghost" size="sm" className="text-xs">Copy</Button>
-              </div>
-              <pre className="text-sm text-foreground overflow-x-auto">
-                <code>{`pip install agent-forge
+            <CodeBlock
+              code={`pip install agent-forge
 
 from agent_forge import BaseAgent
 
@@ -135,9 +132,10 @@ class MyAgent(BaseAgent):
         return page.get('page_title')
 
 agent = MyAgent()
-result = await agent.run("https://example.com")`}</code>
-              </pre>
-            </div>
+result = await agent.run("https://example.com")`}
+              title="Quick Start"
+              language="python"
+            />
           </motion.div>
         </div>
       </div>

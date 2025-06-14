@@ -26,6 +26,17 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 - **[api/BaseAgent API Reference](api/BASEAGENT_API_REFERENCE.md)** - Complete BaseAgent class documentation
 - **[api/CLI Reference](api/CLI_REFERENCE.md)** - Complete command-line interface guide
 
+### **🚀 Business & Strategy**
+- **[🎉 Agent Release Strategy](AGENT_RELEASE_STRATEGY.md)** - **✅ NEW** Open core model and tiered agent release plan
+- **[🎉 Agent Marketplace Strategy](business/AGENT_MARKETPLACE_STRATEGY.md)** - **✅ NEW** Creator economy and marketplace framework
+- **[business/Cost Savings Analysis](business/COST_SAVINGS_ANALYSIS.md)** - Enterprise cost reduction analysis
+- **[business/Business Case Templates](business/BUSINESS_CASE_TEMPLATES.md)** - Templates for enterprise adoption
+
+### **🔬 Research & Analysis**
+- **[🎉 Agent Release Research](research/AGENT_RELEASE_RESEARCH.md)** - **🔥 ACTIVE** Research framework for agent tier decisions
+- **[research/Competitive Analysis Template](research/COMPETITIVE_ANALYSIS_TEMPLATE.md)** - Framework for competitor analysis
+- **[research/README](research/README.md)** - Research methodology and project overview
+
 ### **📖 Additional Resources**
 - **[Framework Configuration](FRAMEWORK_CONFIGURATION.md)** - Settings and environment setup
 - **[Best Practices](BEST_PRACTICES.md)** - Development patterns and recommendations
@@ -42,6 +53,9 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 | **🏢 Monitor competitors and brands** | **[Visual Intelligence Guide](enterprise/VISUAL_INTELLIGENCE_GUIDE.md)** |
 | **🏢 Automate due diligence research** | **[Research Compiler Guide](enterprise/RESEARCH_COMPILER_GUIDE.md)** |
 | **💰 Calculate enterprise ROI** | **[ROI Calculator](business/ROI_CALCULATOR.md)** |
+| **🚀 Understand the business strategy** | **[Agent Release Strategy](AGENT_RELEASE_STRATEGY.md)** |
+| **🏪 Learn about the marketplace** | **[Agent Marketplace Strategy](business/AGENT_MARKETPLACE_STRATEGY.md)** |
+| **🔬 Research agent tier decisions** | **[Agent Release Research](research/AGENT_RELEASE_RESEARCH.md)** |
 | Get started with framework development | [guides/Getting Started Guide](guides/GETTING_STARTED.md) |
 | Build my first agent | [tutorials/Agent Development Tutorial](tutorials/AGENT_DEVELOPMENT_TUTORIAL.md) |
 | Create blockchain-verified agents | [integrations/NMKR Proof-of-Execution Guide](integrations/NMKR_PROOF_OF_EXECUTION_GUIDE.md) |

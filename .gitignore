@@ -71,6 +71,27 @@ cache/
 # Internal development documentation (keep local only)
 memory-bank/
 
+# Strategic agent examples (keep locally, hide from public GitHub)
+# Only basic community tier agents are public during strategy development
+examples/visual_intelligence_agent.py
+examples/research_compiler_agent.py
+examples/nmkr_auditor_agent.py
+examples/masumi_enabled_navigation_agent.py
+examples/agent_communication_hub.py
+examples/external_site_scraper_agent.py
+examples/data_compiler_agent.py
+examples/masumi_cli_demo.py
+examples/masumi_crewai_integration.py
+examples/test_enterprise_agents.py
+examples/ENTERPRISE_AGENTS_GUIDE.md
+
+# Advanced agent development files
+agents/
+examples/test_documentation_manager.py
+
+# Premium MCP server (keep community version public)
+mcp_server_full.py
+
 # MCP Server logs
 mcp_server.log
 

@@ -23,71 +23,73 @@
 
 ## 💡 **Our Solution: Verifiable Enterprise AI Agents**
 
-### **Agent Forge + Cardano = Provable Intelligence**
+### **Agent Forge + Cardano = Verifiable AI Framework**
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Data Sources  │    │   Agent Forge    │    │   Cardano       │
-│                 │    │                  │    │   Blockchain    │
-│ • Conferences   │───▶│ Visual Intel     │───▶│ • NMKR Proof    │
-│ • Research      │    │ Research Comp    │    │ • NFT Metadata  │
-│ • Market Data   │    │ Agents           │    │ • Verification  │
+│   Any Data      │    │   Agent Forge    │    │   Cardano       │
+│   Source        │    │   Framework      │    │   Blockchain    │
+│ • Web Pages     │───▶│ • Custom Agents  │───▶│ • NMKR Proof   │
+│ • APIs          │    │ • Steel Browser  │    │ • NFT Metadata  │
+│ • Documents     │    │ • CLI Tools      │    │ • Verification  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ### **Breakthrough Innovation**
-1. **AI Agents perform enterprise intelligence** (conference analysis, market research, due diligence)
-2. **Cardano blockchain records proof-of-execution** via NMKR NFT minting
-3. **Enterprise clients get verifiable, auditable AI insights** with blockchain evidence
+1. **Open-source framework enables rapid AI agent development** with production-ready tools
+2. **Cardano blockchain integration provides proof-of-execution** for any agent task
+3. **Developers build verifiable, auditable AI agents** with blockchain evidence built-in
 
 ---
 
 ## 🏗️ **Technical Architecture**
 
-### **Core Components**
+### **Core Framework Components**
 
-#### **1. Visual Intelligence Agent**
-- **Brand detection** at conferences and events (95%+ accuracy)
-- **Executive identification** for business development
-- **Competitive landscape** analysis in real-time
+#### **1. Agent Framework**
+- **BaseAgent & AsyncContextAgent** classes for rapid development
+- **Auto-discovery system** for agent registration and management
+- **CLI interface** with comprehensive agent orchestration
 
-#### **2. Research Compiler Agent**  
-- **M&A due diligence** automation (70% time reduction)
-- **Market research** compilation from multiple sources
-- **Risk assessment** with confidence scoring
+#### **2. Steel Browser Integration**  
+- **Professional web automation** with anti-bot evasion
+- **Async context management** for reliable scraping
+- **Enterprise-grade** browser client with timeout handling
 
-#### **3. Cardano Proof-of-Execution**
-- **NMKR integration** for NFT-based verification
-- **CIP-25 compliant metadata** with analysis results
-- **Masumi Network** agent collaboration and verification
+#### **3. Cardano Blockchain Integration**
+- **NMKR Proof-of-Execution** NFT minting for task verification
+- **CIP-25 compliant metadata** with execution proofs
+- **Masumi Network** integration for AI agent economy participation
 
-### **Blockchain Verification Flow**
+### **Framework Usage Example**
 ```python
-# Agent completes analysis
-analysis_result = await visual_agent.analyze_conference(images)
+from core.agents.base import AsyncContextAgent
+from core.blockchain.nmkr_integration import NMKRProofGenerator
 
-# Generate proof-of-execution
-proof_metadata = {
-    "analysis_type": "competitive_intelligence",
-    "data_sources": len(images),
-    "confidence_score": analysis_result.confidence,
-    "key_findings": analysis_result.brands[:5],
-    "timestamp": datetime.now().isoformat(),
-    "agent_signature": agent.get_signature()
-}
+class MyCustomAgent(AsyncContextAgent):
+    async def execute_task(self, task_data):
+        # Your custom agent logic here
+        result = await self.process_data(task_data)
+        
+        # Framework automatically generates blockchain proof
+        proof = await self.generate_execution_proof({
+            "agent_id": self.agent_id,
+            "task_completed": True,
+            "execution_time": result.duration,
+            "results": result.summary,
+            "metadata": {"framework_version": "1.0.0"}
+        })
+        
+        return {
+            "status": "success",
+            "data": result.data,
+            "blockchain_proof": proof.transaction_id,
+            "verification_url": proof.cardano_scan_url
+        }
 
-# Mint verification NFT on Cardano
-verification_nft = await nmkr.mint_proof_nft(
-    metadata=proof_metadata,
-    policy_id=ENTERPRISE_VERIFICATION_POLICY
-)
-
-# Return verifiable result
-return VerifiedAnalysis(
-    results=analysis_result,
-    blockchain_proof=verification_nft.asset_id,
-    verification_url=f"cardanoscan.io/token/{verification_nft.asset_id}"
-)
+# CLI Usage
+# python cli.py run my_custom_agent --task "analyze data"
+# → Executes agent and mints proof NFT automatically
 ```
 
 ---
@@ -153,19 +155,19 @@ return VerifiedAnalysis(
 
 ---
 
-## 🔥 **Live Demo: Conference Intelligence**
+## 🔥 **Live Demo: Agent Forge Framework**
 
 ### **What We'll Show**
-1. **Feed conference photos** from Berlin Blockchain Week into Visual Intelligence Agent
-2. **Real-time brand detection** identifying sponsors, logos, executive presence
-3. **Automated NMKR proof minting** with CIP-25 metadata on Cardano testnet
-4. **Verification portal** showing blockchain proof of analysis integrity
+1. **Agent discovery system** listing available agents via CLI
+2. **Custom agent creation** using BaseAgent framework patterns  
+3. **Steel Browser integration** with web automation capabilities
+4. **Automated NMKR proof minting** with CIP-25 metadata on Cardano testnet
 
 ### **Expected Results**
-- **25+ companies detected** with confidence scores
-- **Sponsorship tier analysis** (Platinum, Gold, Silver classification)
-- **Executive identification** for business development opportunities
-- **Immutable blockchain record** proving analysis methodology and results
+- **Working CLI interface** with agent discovery and execution
+- **Browser automation** demonstrating Steel Browser integration
+- **Blockchain verification** showing NMKR NFT minting in action
+- **MCP integration** demonstrating Claude Desktop accessibility
 
 ---
 
