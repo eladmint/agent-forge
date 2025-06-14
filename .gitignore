@@ -68,6 +68,9 @@ Thumbs.db
 temp/
 cache/
 
+# Internal development documentation (keep local only)
+memory-bank/
+
 # MCP Server logs
 mcp_server.log
 
