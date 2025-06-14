@@ -1,0 +1,204 @@
+// Conference Commitment Protocol gRPC Service Definition
+// Purpose: Define communication interface between Python FastAPI and TypeScript Ensemble service
+// Security: All operations restricted to Base Sepolia testnet for MVP safety
+
+syntax = "proto3";
+
+package conference_commitment;
+
+// Main service for Conference Commitment Protocol operations
+service CommitmentService {
+  // Initiate a commitment (staking) for an event
+  rpc Commit(CommitRequest) returns (CommitResponse);
+  
+  // Verify check-in and process refund
+  rpc VerifyCheckin(CheckinRequest) returns (CheckinResponse);
+  
+  // Get commitment status for a user and event
+  rpc GetCommitmentStatus(StatusRequest) returns (StatusResponse);
+  
+  // Health check for service monitoring
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Commitment tier enumeration
+enum CommitmentTier {
+  FREE = 0;         // 1 free registration, no staking required
+  COMMITTED = 1;    // 0.05 ETH stake, unlimited registrations + social proof
+  VIP = 2;          // 0.5 ETH stake, all features + exclusive networking
+}
+
+// Transaction status enumeration
+enum TransactionStatus {
+  PENDING = 0;      // Transaction submitted but not confirmed
+  CONFIRMED = 1;    // Transaction confirmed on blockchain
+  FAILED = 2;       // Transaction failed or reverted
+  REFUNDED = 3;     // Stake has been refunded to user
+}
+
+// Service health status
+enum ServiceHealth {
+  HEALTHY = 0;      // Service operating normally
+  DEGRADED = 1;     // Service operational but with issues
+  UNHEALTHY = 2;    // Service experiencing critical problems
+}
+
+// Request to commit to an event with staking
+message CommitRequest {
+  string user_id = 1;                    // User identifier
+  string event_id = 2;                   // Event identifier
+  CommitmentTier tier = 3;               // Selected commitment tier
+  string user_wallet_address = 4;       // User's blockchain wallet address
+  string user_email = 5;                // User email for notifications
+  
+  // Optional metadata
+  map<string, string> metadata = 10;    // Additional context data
+}
+
+// Response from commitment operation
+message CommitResponse {
+  bool success = 1;                      // Operation success indicator
+  string message = 2;                    // Human-readable status message
+  string transaction_hash = 3;           // Blockchain transaction hash (if applicable)
+  TransactionStatus status = 4;          // Current transaction status
+  string contract_address = 5;           // Smart contract address used
+  string stake_amount = 6;               // Amount staked (in ETH)
+  int64 estimated_gas_fee = 7;          // Estimated gas fee in wei
+  string error_code = 8;                // Error code for debugging
+  
+  // Timing information
+  int64 timestamp = 20;                  // Response timestamp (Unix)
+  int64 estimated_confirmation_time = 21; // Estimated confirmation time (Unix)
+}
+
+// Request to verify check-in and process refund
+message CheckinRequest {
+  string user_id = 1;                    // User identifier
+  string event_id = 2;                   // Event identifier
+  string checkin_method = 3;             // Check-in method (manual, qr_code, location, admin)
+  string verification_data = 4;          // Verification proof (QR code, location, etc.)
+  string verified_by = 5;                // Who verified the check-in
+  
+  // Optional location data
+  double latitude = 10;                  // Check-in latitude
+  double longitude = 11;                 // Check-in longitude
+  string location_name = 12;             // Human-readable location
+}
+
+// Response from check-in verification
+message CheckinResponse {
+  bool success = 1;                      // Verification success indicator
+  string message = 2;                    // Human-readable status message
+  bool refund_eligible = 3;              // Whether user is eligible for refund
+  string refund_transaction_hash = 4;    // Refund transaction hash (if processed)
+  TransactionStatus refund_status = 5;   // Refund transaction status
+  string refund_amount = 6;              // Amount refunded (in ETH)
+  
+  // Timing information
+  int64 checkin_timestamp = 20;          // Check-in verification timestamp
+  int64 refund_timestamp = 21;           // Refund processing timestamp
+}
+
+// Request to get commitment status
+message StatusRequest {
+  string user_id = 1;                    // User identifier
+  string event_id = 2;                   // Event identifier (optional)
+  bool include_transaction_details = 3;  // Include full transaction info
+}
+
+// Response with commitment status information
+message StatusResponse {
+  bool has_commitment = 1;               // Whether user has commitment for event
+  CommitmentTier tier = 2;               // User's commitment tier
+  TransactionStatus status = 3;          // Current transaction status
+  string stake_amount = 4;               // Amount currently staked
+  string transaction_hash = 5;           // Original staking transaction hash
+  bool checked_in = 6;                   // Whether user has checked in
+  bool refund_processed = 7;             // Whether refund has been processed
+  
+  // Transaction details (if requested)
+  repeated TransactionDetail transactions = 10;
+  
+  // Profile information
+  UserCommitmentProfile profile = 20;
+}
+
+// Transaction detail information
+message TransactionDetail {
+  string transaction_hash = 1;           // Transaction hash
+  string transaction_type = 2;           // stake, refund, etc.
+  TransactionStatus status = 3;          // Transaction status
+  string amount = 4;                     // Transaction amount
+  int64 timestamp = 5;                   // Transaction timestamp
+  int64 block_number = 6;                // Block number (if confirmed)
+  string gas_fee = 7;                    // Gas fee paid
+  string error_message = 8;              // Error message (if failed)
+}
+
+// User commitment profile for social proof
+message UserCommitmentProfile {
+  int32 total_commitments = 1;           // Total number of commitments
+  string total_stake_amount = 2;         // Total amount staked historically
+  CommitmentTier highest_tier_achieved = 3; // Highest tier ever achieved
+  double reputation_score = 4;           // Reputation score (0-100)
+  int32 successful_checkins = 5;         // Number of successful check-ins
+  int32 failed_checkins = 6;             // Number of failed check-ins
+  bool profile_public = 7;               // Whether profile is publicly visible
+}
+
+// Health check request (empty for simplicity)
+message HealthCheckRequest {
+  string service_version = 1;            // Requesting service version
+}
+
+// Health check response
+message HealthCheckResponse {
+  ServiceHealth status = 1;              // Current service health
+  string message = 2;                    // Health status message
+  string service_version = 3;            // Service version
+  string ensemble_sdk_version = 4;       // Ensemble SDK version
+  bool base_sepolia_connected = 5;       // Base Sepolia connectivity status
+  int64 last_successful_operation = 6;   // Last successful operation timestamp
+  
+  // Performance metrics
+  double average_response_time_ms = 10;  // Average response time
+  int32 total_requests_processed = 11;   // Total requests processed
+  int32 failed_requests_count = 12;      // Failed requests count
+  double error_rate = 13;                // Error rate (0.0-1.0)
+}
+
+// Error details for debugging and monitoring
+message ErrorDetail {
+  string error_code = 1;                 // Machine-readable error code
+  string error_message = 2;              // Human-readable error message
+  string error_category = 3;             // Error category (validation, blockchain, sdk, network)
+  string stack_trace = 4;                // Stack trace (development only)
+  map<string, string> context = 5;      // Additional error context
+  int64 timestamp = 6;                   // Error occurrence timestamp
+}
+
+// Event information for context
+message EventInfo {
+  string event_id = 1;                   // Event identifier
+  string event_title = 2;               // Event title
+  string event_url = 3;                 // Event URL
+  int64 event_start_time = 4;            // Event start timestamp
+  int64 event_end_time = 5;              // Event end timestamp
+  string venue_name = 6;                 // Venue name
+  string city = 7;                       // Event city
+  string country = 8;                    // Event country
+}
+
+// Commitment statistics for analytics
+message CommitmentStats {
+  string event_id = 1;                   // Event identifier
+  int32 total_commitments = 2;           // Total commitments for event
+  int32 free_commitments = 3;            // Free tier commitments
+  int32 committed_commitments = 4;       // Committed tier commitments
+  int32 vip_commitments = 5;             // VIP tier commitments
+  string total_stake_amount = 6;         // Total amount staked for event
+  int32 total_checkins = 7;              // Total check-ins processed
+  int32 verified_checkins = 8;           // Verified check-ins
+  double checkin_rate = 9;               // Check-in rate (0.0-1.0)
+  string total_refunded = 10;            // Total amount refunded
+}

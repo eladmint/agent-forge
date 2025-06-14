@@ -1,0 +1,55 @@
+---
+# US Central Only Deployment Configuration
+# Optimized post-service-matrix-cleanup deployment
+
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+      - '-f'
+      - 'src/extraction/deployment/configs/dockerfiles/02_Dockerfile.enhanced_multi_region'
+      - '.'
+
+  # Step 2: Push the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+
+  # Step 3: Deploy to Cloud Run (US Central only)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-us-central'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '4Gi'
+      - '--cpu'
+      - '2'
+      - '--timeout'
+      - '1800'
+      - '--set-env-vars'
+      - 'REGION=us-central1,COST_TIER=2,STEEL_BROWSER_ENABLED=true'
+
+# Configuration
+timeout: '2400s'  # 40 minutes
+options:
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+# Artifact Registry
+substitutions:
+  _REGION: 'us-central1'
+  _SERVICE_NAME: 'enhanced-multi-region-us-central'
+  _IMAGE_TAG: 'v4' 

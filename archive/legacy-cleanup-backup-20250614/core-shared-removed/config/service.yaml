@@ -1,0 +1,143 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    run.googleapis.com/client-version: 520.0.0
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+    run.googleapis.com/operation-id: 3e2cd5aa-c76d-46c6-85be-4435cef1e44f
+    run.googleapis.com/urls: '["https://chatbot-api-service-867263134607.europe-west1.run.app"]'
+    serving.knative.dev/creator: mintzer.elad@gmail.com
+    serving.knative.dev/lastModifier: mintzer.elad@gmail.com
+  creationTimestamp: '2025-05-02T23:05:18.748864Z'
+  generation: 4
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: chatbot-api-service
+  namespace: '867263134607'
+  resourceVersion: AAY0L26KK9Y
+  selfLink: /apis/serving.knative.dev/v1/namespaces/867263134607/services/chatbot-api-service
+  uid: 34604503-e6e8-4be2-8087-b2d768448884
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '3'
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 520.0.0
+        run.googleapis.com/startup-cpu-boost: 'true'
+      labels:
+        run.googleapis.com/startupProbeType: Default
+    spec:
+      containerConcurrency: 80
+      containers:
+      - image: europe-west1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/chatbot-api:latest
+        ports:
+        - containerPort: 8000
+          name: http1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+        startupProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 10
+          httpGet:
+            path: /health
+            port: 8000
+        volumeMounts:
+        - mountPath: /etc/secrets/google-api-key
+          name: GOOGLE_API_KEY-vot-qoz-yiq
+        - mountPath: /etc/secrets/supabase-url
+          name: SUPABASE_URL-god-xek-del
+        - mountPath: /etc/secrets/supabase-key
+          name: SUPABASE_KEY-ziy-lak-cab
+        - mountPath: /etc/secrets/telegram-bot-token
+          name: TELEGRAM_BOT_TOKEN-qeg-qas-rov
+      serviceAccountName: 867263134607-compute@developer.gserviceaccount.com
+      timeoutSeconds: 300
+      volumes:
+      - name: GOOGLE_API_KEY-yuf-hax-nap
+        secret:
+          items:
+          - key: latest
+            path: key
+          secretName: GOOGLE_API_KEY
+      - name: SUPABASE_URL-vad-gup-wot
+        secret:
+          items:
+          - key: latest
+            path: url
+          secretName: SUPABASE_URL
+      - name: SUPABASE_KEY-xum-nal-nom
+        secret:
+          items:
+          - key: latest
+            path: key
+          secretName: SUPABASE_KEY
+      - name: TELEGRAM_BOT_TOKEN-cen-bor-kiq
+        secret:
+          items:
+          - key: latest
+            path: token
+          secretName: TELEGRAM_BOT_TOKEN
+      - name: GOOGLE_API_KEY-vot-qoz-yiq
+        secret:
+          items:
+          - key: latest
+            path: key
+          secretName: GOOGLE_API_KEY
+      - name: SUPABASE_URL-god-xek-del
+        secret:
+          items:
+          - key: latest
+            path: url
+          secretName: SUPABASE_URL
+      - name: SUPABASE_KEY-ziy-lak-cab
+        secret:
+          items:
+          - key: latest
+            path: key
+          secretName: SUPABASE_KEY
+      - name: TELEGRAM_BOT_TOKEN-qeg-qas-rov
+        secret:
+          items:
+          - key: latest
+            path: token
+          secretName: TELEGRAM_BOT_TOKEN
+  traffic:
+  - latestRevision: true
+    percent: 100
+status:
+  conditions:
+  - lastTransitionTime: '2025-05-02T23:23:02.849445Z'
+    message: |-
+      Revision 'chatbot-api-service-recreate-uvicorn-v1' is not ready and cannot serve traffic. The user-provided container failed to start and listen on the port defined provided by the PORT=8000 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+
+      Logs URL: https://console.cloud.google.com/logs/viewer?project=tokenhunter-457310&resource=cloud_run_revision/service_name/chatbot-api-service/revision_name/chatbot-api-service-recreate-uvicorn-v1&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22chatbot-api-service%22%0Aresource.labels.revision_name%3D%22chatbot-api-service-recreate-uvicorn-v1%22 
+      For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+    reason: HealthCheckContainerError
+    status: 'False'
+    type: Ready
+  - lastTransitionTime: '2025-05-02T23:23:02.850681Z'
+    message: |-
+      The user-provided container failed to start and listen on the port defined provided by the PORT=8000 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+
+      Logs URL: https://console.cloud.google.com/logs/viewer?project=tokenhunter-457310&resource=cloud_run_revision/service_name/chatbot-api-service/revision_name/chatbot-api-service-recreate-uvicorn-v1&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22chatbot-api-service%22%0Aresource.labels.revision_name%3D%22chatbot-api-service-recreate-uvicorn-v1%22 
+      For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+    status: 'True'
+    type: ConfigurationsReady
+  - lastTransitionTime: '2025-05-02T23:23:02.849445Z'
+    message: |-
+      Revision 'chatbot-api-service-recreate-uvicorn-v1' is not ready and cannot serve traffic. The user-provided container failed to start and listen on the port defined provided by the PORT=8000 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+
+      Logs URL: https://console.cloud.google.com/logs/viewer?project=tokenhunter-457310&resource=cloud_run_revision/service_name/chatbot-api-service/revision_name/chatbot-api-service-recreate-uvicorn-v1&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22chatbot-api-service%22%0Aresource.labels.revision_name%3D%22chatbot-api-service-recreate-uvicorn-v1%22 
+      For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+    reason: HealthCheckContainerError
+    status: 'False'
+    type: RoutesReady
+  latestCreatedRevisionName: chatbot-api-service-recreate-uvicorn-v1
+  observedGeneration: 4

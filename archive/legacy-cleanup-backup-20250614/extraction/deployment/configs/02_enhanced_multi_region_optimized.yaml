@@ -1,0 +1,83 @@
+---
+# =============================================================================
+# OPTIMIZED ENHANCED MULTI-REGION CLOUD BUILD CONFIGURATION
+# Reduces deployment time and resource usage to avoid quota issues
+# =============================================================================
+
+steps:
+  # Step 1: Build image once, reuse for both regions
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+      - '-f'
+      - 'src/extraction/deployment/configs/dockerfiles/02_Dockerfile.enhanced_multi_region'
+      - '.'
+
+  # Step 2: Push image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+
+  # Step 3: Deploy to US Central
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-us-central'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '1'
+      - '--timeout'
+      - '1800'
+      - '--max-instances'
+      - '5'
+      - '--set-env-vars'
+      - 'REGION=us-central1,COST_TIER=2,STEEL_BROWSER_ENABLED=true'
+
+  # Step 4: Deploy to Europe West
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-europe-west'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+      - '--region'
+      - 'europe-west1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '1'
+      - '--timeout'
+      - '1800'
+      - '--max-instances'
+      - '5'
+      - '--set-env-vars'
+      - 'REGION=europe-west1,COST_TIER=3,STEEL_BROWSER_ENABLED=true'
+
+# Optimized build options for faster deployment
+options:
+  logging: 'CLOUD_LOGGING_ONLY'
+
+# Reduced timeout for faster failure detection
+timeout: '1200s'  # 20 minutes instead of 40 minutes
+
+# Substitution variables
+substitutions:
+  _IMAGE_TAG: 'v4-resilient'

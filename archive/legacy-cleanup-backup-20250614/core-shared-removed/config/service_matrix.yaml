@@ -1,0 +1,187 @@
+# =============================================================================
+# NURU AI SERVICE MATRIX CONFIGURATION
+# Centralized service categorization and cleanup policies
+# =============================================================================
+
+# Service classification and management rules
+service_matrix:
+  # Production services (NEVER cleanup automatically)
+  production:
+    - name: "chatbot-api-service-v2"
+      type: "api"
+      status: "operational"
+      protection_level: "high"
+      description: "Main API service"
+      
+    - name: "production-orchestrator"
+      type: "extraction"
+      status: "operational" 
+      protection_level: "high"
+      description: "Main extraction orchestrator"
+      
+    - name: "steel-browser-orchestrator"
+      type: "extraction"
+      status: "operational"
+      protection_level: "high"
+      description: "Steel Browser orchestration service"
+      
+    - name: "telegram-bot-service"
+      type: "bot"
+      status: "operational"
+      protection_level: "high"
+      description: "Telegram bot interface"
+      
+    - name: "enhanced-multi-region-us-central"
+      type: "extraction"
+      status: "operational"
+      protection_level: "high"
+      description: "US Central enhanced extraction service"
+      
+    - name: "enhanced-multi-region-europe-west"
+      type: "extraction"
+      status: "planned"
+      protection_level: "high"
+      description: "Europe West enhanced extraction service for IP diversity"
+
+  # Legacy services (auto cleanup after review)
+  legacy:
+    - pattern: "*enhanced-multi-region*-old"
+      description: "Old versions of enhanced multi-region services"
+    - pattern: "*-legacy"
+      description: "Services explicitly marked as legacy"
+    - pattern: "*-deprecated"
+      description: "Deprecated service versions"
+    # Note: enhanced-multi-region-europe-west was removed via service matrix cleanup
+      
+    - pattern: "*enhanced-multi-region*"
+      type: "extraction"
+      status: "legacy"
+      protection_level: "low"
+      description: "Legacy multi-region services"
+      cleanup_policy: "auto_cleanup"
+      exclude:
+        - "enhanced-multi-region-us-central"  # Keep US Central as production
+      
+    - pattern: "*-v[0-9]*"
+      type: "versioned"
+      status: "legacy" 
+      protection_level: "low"
+      description: "Old versioned services"
+      cleanup_policy: "auto_cleanup"
+      exclude:
+        - "chatbot-api-service-v2"  # Current production version
+      
+    - pattern: "*-old"
+      type: "backup"
+      status: "legacy"
+      protection_level: "low"
+      description: "Old backup services"
+      cleanup_policy: "auto_cleanup"
+      
+    - pattern: "*-backup"
+      type: "backup"
+      status: "legacy"
+      protection_level: "low"
+      description: "Backup services"
+      cleanup_policy: "auto_cleanup"
+      
+  # Staging/temporary services (auto cleanup after 24 hours)
+  staging:
+    - pattern: "*-staging*"
+      type: "staging"
+      status: "temporary"
+      protection_level: "low"
+      description: "Staging environment services"
+      cleanup_policy: "auto_after_24_hours"
+      
+    - pattern: "*-test*"
+      type: "test"
+      status: "temporary"
+      protection_level: "low"
+      description: "Testing services"
+      cleanup_policy: "auto_after_24_hours"
+      
+    - pattern: "*-temp*"
+      type: "temporary"
+      status: "temporary"
+      protection_level: "low"
+      description: "Temporary services"
+      cleanup_policy: "auto_cleanup"
+
+# Cleanup policies
+cleanup_policies:
+  never:
+    description: "Never automatically cleanup - manual only"
+    requires_manual_approval: true
+    
+  auto_cleanup:
+    description: "Safe for automatic cleanup"
+    requires_manual_approval: false
+    
+  auto_after_24_hours:
+    description: "Cleanup automatically after 24 hours"
+    requires_manual_approval: false
+    max_age_hours: 24
+    
+  auto_after_7_days:
+    description: "Cleanup automatically after 7 days"
+    requires_manual_approval: false
+    max_age_hours: 168
+    
+  manual_review:
+    description: "Requires manual review before cleanup"
+    requires_manual_approval: true
+
+# Protection levels
+protection_levels:
+  high:
+    description: "Critical production services - maximum protection"
+    auto_cleanup_allowed: false
+    requires_confirmation: true
+    
+  medium:
+    description: "Important services - protected but can be cleaned with confirmation"
+    auto_cleanup_allowed: false
+    requires_confirmation: true
+    
+  low:
+    description: "Non-critical services - safe for automatic cleanup"
+    auto_cleanup_allowed: true
+    requires_confirmation: false
+
+# Service types
+service_types:
+  api:
+    description: "API services"
+    default_protection: "high"
+    
+  extraction:
+    description: "Data extraction services"
+    default_protection: "medium"
+    
+  bot:
+    description: "Bot services"
+    default_protection: "medium"
+    
+  staging:
+    description: "Staging/test services"
+    default_protection: "low"
+    
+  temporary:
+    description: "Temporary services"
+    default_protection: "low"
+    
+  legacy:
+    description: "Legacy/deprecated services"
+    default_protection: "low"
+
+# Regional configuration
+regions:
+  primary: "us-central1"
+  secondary: "europe-west1"
+  
+# Integration settings
+integration:
+  service_responsibility_matrix: "memory-bank/current-focus/service_responsibility_matrix.md"
+  service_configs_directory: "config/services/"
+  cleanup_script: "scripts/deployment/cleanup_old_services.sh" 

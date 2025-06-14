@@ -1,0 +1,57 @@
+steps:
+  # Build simple multi-region extraction service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/tokenhunter-457310/simple-multi-region-extractor:$BUILD_ID',
+      '-f', 'deployment/docker/Dockerfile.simple-multi-region',
+      '.'
+    ]
+    timeout: 1200s
+
+  # Push image to registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/tokenhunter-457310/simple-multi-region-extractor:$BUILD_ID']
+    timeout: 300s
+
+  # Deploy to us-central1 (primary region for testing)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'run', 'deploy', 'multi-region-extractor-test-us',
+      '--image', 'gcr.io/tokenhunter-457310/simple-multi-region-extractor:$BUILD_ID',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '2Gi',
+      '--cpu', '1',
+      '--timeout', '900',
+      '--max-instances', '5',
+      '--concurrency', '10',
+      '--set-env-vars', 'REGION=us-central1,REGION_ID=us,COST_TIER=2,EXTRACTION_MODE=test'
+    ]
+    timeout: 600s
+
+  # Deploy to europe-west1 (secondary region for testing)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'run', 'deploy', 'multi-region-extractor-test-eu',
+      '--image', 'gcr.io/tokenhunter-457310/simple-multi-region-extractor:$BUILD_ID',
+      '--region', 'europe-west1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '2Gi',
+      '--cpu', '1',
+      '--timeout', '900',
+      '--max-instances', '5',
+      '--concurrency', '10',
+      '--set-env-vars', 'REGION=europe-west1,REGION_ID=eu,COST_TIER=3,EXTRACTION_MODE=test'
+    ]
+    timeout: 600s
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 2400s

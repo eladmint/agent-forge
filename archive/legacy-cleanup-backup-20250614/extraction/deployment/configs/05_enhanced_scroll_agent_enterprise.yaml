@@ -1,0 +1,45 @@
+# Enhanced Scroll Agent Enterprise Cloud Build Configuration
+# Following Enterprise Deployment Guide v5.0 - Based on working production orchestrator pattern
+# Uses proven dockerfile and service pattern with Enhanced Scroll Agent environment variables
+steps:
+  # Build the Docker image using working production orchestrator dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-scroll-agent:enterprise',
+      '-f', 'src/extraction/deployment/configs/dockerfiles/06_Dockerfile.production_orchestrator',
+      '.'
+    ]
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-scroll-agent:enterprise']
+
+  # Deploy Enhanced Scroll Agent with Enhanced Scroll Agent configuration
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'enhanced-multi-region-us-central',
+      '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-scroll-agent:enterprise',
+      '--region=us-central1',
+      '--platform=managed',
+      '--allow-unauthenticated',
+      '--port=8080',
+      '--memory=4Gi',
+      '--cpu=2',
+      '--min-instances=0',
+      '--max-instances=5',
+      '--concurrency=10',
+      '--timeout=1800',
+      '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest,VERTEX_PROJECT_ID=VERTEX_PROJECT_ID:latest',
+      '--set-env-vars=PYTHONPATH=/app,GCP_PROJECT_ID=tokenhunter-457310,ENHANCED_SCROLL_AGENT=true,MCP_BROWSER_ENABLED=true,BROWSER_AUTOMATION_ENABLED=true,LUMA_FORCE_BROWSER=true,STEEL_BROWSER_ENABLED=true,MULTI_AGENT_PIPELINE=true,COST_TIER=2,REGION=us-central1'
+    ]
+
+# Store build artifacts
+images:
+  - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-scroll-agent:enterprise'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s  # 60 minutes for enhanced processing

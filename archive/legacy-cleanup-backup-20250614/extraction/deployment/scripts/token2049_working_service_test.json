@@ -1,0 +1,71 @@
+{
+  "region": "us-central1",
+  "total_events": 1,
+  "successful_events": 0,
+  "failed_events": 1,
+  "processing_time": 4.647143125534058,
+  "cost": 0.0018,
+  "results": [
+    {
+      "url": "https://lu.ma/nownodes",
+      "status": "success",
+      "processing_time": 4.099633693695068,
+      "completeness_score": 0.5357142857142857,
+      "name": "Token2049 Dubai Side Events \u00b7 Events Calendar",
+      "description": "View and subscribe to events from Token2049 Dubai Side Events on Luma. All side events combined in one list. Will be updated every day for you \ud83d\udc9c Feel free to DM me on Telegram if you have any questions @tmarzo",
+      "start_date": "",
+      "end_date": "",
+      "location": "{\"@type\":\"Organization\",\"name\":\"Token2049 Dubai Side Events\",\"url\":\"https://lu.ma/nownodes\",\"description\":\"All side events combined in one list. Will be updated every day for you \ud83d\udc9c Feel free to DM me on Telegram if you have any questions @tmarzo\",\"image\":[\"https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,anim=false,background=white,quality=75,width=500,height=500/calendar-cover-images/jg/f4c29dfe-50ac-4ece-96d6-041415442714.png\"],\"location\":{\"@type\":\"Place\",\"address\":{\"@type\":\"PostalAddress\",\"addressLocality\":\"Dubai\",\"addressCountry\":\"United Arab Emirates\",\"addressRegion\":\"Dubai\"},\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":25.204849,\"longitude\":55.270783},\"latitude\":25.204849,\"longitude\":55.270783},\"potentialAction\":{\"@type\":\"SubscribeAction\",\"actionStatus\":\"PotentialActionStatus\",\"url\":\"https://lu.ma/nownodes\"},\"events\":[],\"@context\":\"https://schema.org\"}",
+      "speakers": [],
+      "sponsors": [],
+      "organizers": [
+        {
+          "name": "tmarzo",
+          "company": null,
+          "role": "Organizer"
+        }
+      ],
+      "tags": [],
+      "images_analyzed": 1,
+      "external_sites_scraped": 0,
+      "data_sources": [
+        "platform_luma_tier_1",
+        "standard_enhanced_extraction",
+        "progressive_content_premium",
+        "ai_enhanced_full_content",
+        "visual_intelligence"
+      ],
+      "error_message": "",
+      "visual_intelligence": {
+        "booth_detections": [],
+        "agenda_items": [],
+        "crowd_analysis": null,
+        "floor_plan_analysis": null
+      },
+      "mcp_browser_used": false,
+      "crypto_industry_matches": 0,
+      "data_refinement_applied": true,
+      "storage_tier": "standard",
+      "quality_metadata": {
+        "storage_tier": "standard",
+        "original_completeness": 0.5357142857142857,
+        "enhancement_needed": false,
+        "storage_timestamp": 1749836788.1293414,
+        "quality_bonus_applied": true
+      },
+      "metadata": {
+        "quality_tier": "standard",
+        "enhancement_needed": false,
+        "priority_indexing": false,
+        "full_metadata_stored": true,
+        "discovery_timestamp": 1749836788.129365,
+        "retention_priority": "normal"
+      },
+      "calendar_extraction_report": null,
+      "database_integrated": true,
+      "success": false
+    }
+  ],
+  "session_id": "us-central1_1749836783",
+  "extraction_method": "enhanced_orchestrator_us-central1"
+}

@@ -1,0 +1,71 @@
+# Agent Forge Framework Requirements
+# Comprehensive dependency list for the standalone Agent Forge framework
+
+# Core Framework Dependencies
+asyncio-context==0.3.0         # Enhanced async context manager support
+
+# HTTP Client Libraries
+aiohttp>=3.9.0                  # Async HTTP client for Steel Browser API and NMKR integration
+requests>=2.31.0                # Sync HTTP client for fallback operations
+
+# Web Scraping and Browser Automation  
+selenium>=4.15.0                # Web browser automation (backup to Steel Browser)
+beautifulsoup4>=4.12.0          # HTML parsing and content extraction
+lxml>=4.9.0                     # XML/HTML parser for BeautifulSoup
+
+# AI and Language Models
+openai>=1.0.0                   # OpenAI API integration
+anthropic>=0.7.0                # Anthropic Claude API integration  
+google-cloud-aiplatform>=1.38.0 # Google Vertex AI integration
+
+# Blockchain and Crypto
+web3>=6.11.0                    # Ethereum blockchain integration
+cardano-python>=0.7.0           # Cardano blockchain integration
+ipfshttpclient>=0.8.0a2         # IPFS integration for decentralized storage
+
+# Data Processing and Analysis
+pandas>=2.1.0                   # Data manipulation and analysis
+numpy>=1.24.0                   # Numerical computing
+jsonschema>=4.19.0              # JSON schema validation
+
+# Database Integration
+supabase>=1.0.0                 # Supabase client for database operations
+psycopg2-binary>=2.9.0          # PostgreSQL adapter
+sqlalchemy>=2.0.0               # SQL toolkit and ORM
+
+# Logging and Monitoring
+structlog>=23.2.0               # Structured logging
+prometheus-client>=0.18.0       # Metrics collection for monitoring
+
+# Configuration and Environment
+python-dotenv>=1.0.0            # Environment variable management
+pydantic>=2.4.0                 # Data validation and settings management
+pyyaml>=6.0                     # YAML configuration file support
+
+# Testing Framework
+pytest>=7.4.0                   # Testing framework
+pytest-asyncio>=0.21.0          # Async testing support
+pytest-mock>=3.11.0             # Mocking utilities for tests
+pytest-cov>=4.1.0               # Test coverage reporting
+pytest-html>=4.0.0              # HTML test reports
+
+# Development Tools
+black>=23.9.0                   # Code formatting
+ruff>=0.1.0                     # Fast Python linter
+mypy>=1.6.0                     # Static type checking
+
+# CLI and User Interface
+click>=8.1.0                    # Command line interface creation
+rich>=13.6.0                    # Rich text and beautiful formatting
+
+# Utility Libraries
+python-dateutil>=2.8.0          # Date/time utilities
+urllib3>=2.0.0                  # HTTP library
+certifi>=2023.7.0               # CA certificate bundle
+
+# Cryptography and Security
+cryptography>=41.0.0            # Cryptographic primitives
+hashlib                         # Built-in hashing (part of Python standard library)
+
+# File Format Support
+pillow>=10.0.0                  # Image processing

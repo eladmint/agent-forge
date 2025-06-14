@@ -1,0 +1,65 @@
+# Cloud Build configuration for Main Extractor Service
+# Builds and deploys the comprehensive extraction service with 13+ agents
+
+steps:
+  # Build the main extractor container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-f', 'deployment/docker/Dockerfile.main-extractor',
+      '-t', 'gcr.io/$PROJECT_ID/main-extractor:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/main-extractor:latest',
+      '.'
+    ]
+    id: 'build-main-extractor'
+
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/main-extractor:$BUILD_ID']
+    id: 'push-main-extractor'
+
+  # Deploy to Cloud Run (replace the old production-orchestrator service)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', 'main-extractor-service',
+      '--image', 'gcr.io/$PROJECT_ID/main-extractor:$BUILD_ID',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '4Gi',
+      '--cpu', '2',
+      '--timeout', '1800',
+      '--concurrency', '5',
+      '--max-instances', '3',
+      '--min-instances', '0',
+      '--set-env-vars', 'LOG_TO_JSON=true,LOG_LEVEL=INFO',
+      '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest'
+    ]
+    id: 'deploy-main-extractor'
+
+  # Run post-deployment health check
+  - name: 'gcr.io/cloud-builders/curl'
+    args: [
+      '-f', 
+      '-X', 'GET',
+      'https://main-extractor-service-oo6mrfxexq-uc.a.run.app/health'
+    ]
+    id: 'health-check'
+
+# Build options
+options:
+  machineType: 'E2_HIGHCPU_8'
+  diskSizeGb: '100'
+  logging: CLOUD_LOGGING_ONLY
+
+# Timeout for entire build
+timeout: '2400s'
+
+# Images to push to Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/main-extractor:$BUILD_ID'
+  - 'gcr.io/$PROJECT_ID/main-extractor:latest'
+
+# Build triggers
+# This configuration supports manual triggers and webhook triggers
+# from the Cloud Build console or API

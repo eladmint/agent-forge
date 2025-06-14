@@ -1,0 +1,82 @@
+# =============================================================================
+# GLOBAL ENVIRONMENT CONFIGURATION
+# Enterprise Configuration Management - Phase 2 Enhancement
+# =============================================================================
+
+project:
+  name: "Nuru AI"
+  id: "tokenhunter-457310"
+  version: "2.0"
+  environment: "${ENVIRONMENT:-production}"
+
+# Global service configuration
+services:
+  shared_config:
+    project_id: "tokenhunter-457310"
+    region: "us-central1"
+    timeout: 300
+    memory_limit: "2Gi"
+    cpu_limit: "1"
+    
+  database:
+    provider: "supabase"
+    connection_pool_size: 10
+    max_connections: 100
+    timeout: 30
+    
+  ai_services:
+    primary_provider: "vertex_ai"
+    fallback_provider: "openai"
+    max_tokens: 4096
+    temperature: 0.7
+    timeout: 30
+
+# Security configuration
+security:
+  authentication:
+    method: "google_oauth"
+    token_expiry: 3600
+    
+  secrets:
+    provider: "google_secret_manager"
+    project_id: "tokenhunter-457310"
+    
+  rate_limiting:
+    default_limit: 100
+    burst_limit: 200
+    window_seconds: 60
+
+# Infrastructure configuration
+infrastructure:
+  platform: "google_cloud"
+  container_platform: "cloud_run"
+  build_platform: "cloud_build"
+  monitoring: "google_cloud_monitoring"
+  
+  networking:
+    vpc_connector: "default"
+    egress: "all-traffic"
+    
+  scaling:
+    min_instances: 1
+    max_instances: 10
+    concurrency: 80
+
+# Cost protection
+cost_protection:
+  enabled: true
+  monthly_budget: 100
+  alert_thresholds: [50, 75, 90, 95]
+  emergency_shutdown_threshold: 5  # per hour
+  
+# Logging and monitoring
+logging:
+  level: "INFO"
+  format: "json"
+  retention_days: 30
+  
+monitoring:
+  enabled: true
+  health_check_interval: 60
+  metrics_collection: true
+  alerting: true 

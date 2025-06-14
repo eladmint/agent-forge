@@ -1,0 +1,61 @@
+---
+# Multi-Region Optimized Deployment Configuration
+# Post-service-matrix-cleanup deployment with quota management
+
+steps:
+  # Step 1: Build the Docker image once
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+      - '-f'
+      - 'src/extraction/deployment/configs/dockerfiles/02_Dockerfile.enhanced_multi_region'
+      - '.'
+
+  # Step 2: Push the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+
+  # Step 3: Deploy to Cloud Run (US Central)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-us-central'
+      - '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+      - '--platform=managed'
+      - '--region=us-central1'
+      - '--allow-unauthenticated'
+      - '--memory=4Gi'
+      - '--cpu=2'
+      - '--concurrency=10'
+      - '--timeout=3600'
+      - '--max-instances=3'
+      - '--set-env-vars=REGION=us-central1,COST_TIER=1,PRODUCTION_ORCHESTRATOR_URL=https://production-orchestrator-867263134607.us-central1.run.app'
+
+  # Step 4: Deploy to Cloud Run (Europe West) 
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-europe-west'
+      - '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:v4'
+      - '--platform=managed'
+      - '--region=europe-west1'
+      - '--allow-unauthenticated'
+      - '--memory=4Gi'
+      - '--cpu=2'
+      - '--concurrency=10'
+      - '--timeout=3600'
+      - '--max-instances=3'
+      - '--set-env-vars=REGION=europe-west1,COST_TIER=2,PRODUCTION_ORCHESTRATOR_URL=https://production-orchestrator-867263134607.us-central1.run.app'
+
+# Deployment optimization settings
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+  
+timeout: '3600s'  # 1 hour timeout for both deployments 

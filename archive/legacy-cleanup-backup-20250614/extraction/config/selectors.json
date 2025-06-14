@@ -1,0 +1,678 @@
+{
+  "enhanced_selectors_version": "1.0.0",
+  "generation_timestamp": "2025-06-10T01:02:31.392409",
+  "platform_configurations": {
+    "https://lu.ma/crypto": {
+      "platform": "lu.ma",
+      "extraction_strategy": {
+        "wait_for_elements": [
+          "div[data-testid='event-card']",
+          ".event-item",
+          "a[href*='/e/']"
+        ],
+        "javascript_execution": [
+          "window.scrollTo(0, document.body.scrollHeight);",
+          "document.querySelector('[data-testid=\"load-more\"]')?.click();",
+          "window.dispatchEvent(new Event('scroll'));"
+        ],
+        "primary_selectors": [
+          "div[data-testid='event-card']",
+          ".event-item",
+          "article[class*='event']",
+          "[data-event-id]",
+          ".list-item[href*='/e/']"
+        ],
+        "fallback_selectors": [
+          "a[href*='/e/']",
+          "div[class*='card'][class*='event']",
+          ".row .col a[href*='lu.ma']",
+          "[role='article']"
+        ],
+        "data_attributes": [
+          "data-testid",
+          "data-event-id",
+          "data-event-slug",
+          "href"
+        ]
+      },
+      "field_extraction": {
+        "title": {
+          "selectors": [
+            "h3",
+            "h2",
+            ".title",
+            "[data-testid='event-title']",
+            "a .font-bold"
+          ],
+          "regex_patterns": [
+            "^([^|]+)",
+            "(.{5,100})"
+          ],
+          "processing": null
+        },
+        "date": {
+          "selectors": [
+            ".date",
+            ".time",
+            "[data-testid='event-date']",
+            ".text-sm",
+            "time"
+          ],
+          "regex_patterns": [
+            "(\\d{1,2}/\\d{1,2}/\\d{4})",
+            "(\\w+ \\d{1,2}, \\d{4})",
+            "(\\d{4}-\\d{2}-\\d{2})"
+          ],
+          "processing": null
+        },
+        "location": {
+          "selectors": [
+            ".location",
+            ".venue",
+            "[data-testid='event-location']",
+            ".text-gray"
+          ],
+          "regex_patterns": [
+            "(.{3,50}(?:Street|Ave|Blvd|Road|Plaza|Center))",
+            "([^,]{3,30}, [A-Z]{2})"
+          ],
+          "processing": null
+        },
+        "url": {
+          "selectors": [
+            "a[href*='/e/']",
+            "a[href*='lu.ma']"
+          ],
+          "regex_patterns": [
+            "(https?://lu\\.ma/e/[^?\\s]+)",
+            "(/e/[^?\\s]+)"
+          ],
+          "processing": null
+        }
+      },
+      "optimization_settings": {
+        "scroll_behavior": "smooth",
+        "wait_timeout": 10000,
+        "load_timeout": 30000,
+        "retry_attempts": 3,
+        "dynamic_content_detection": true
+      }
+    },
+    "https://ethglobal.com/events": {
+      "platform": "ethglobal.com",
+      "extraction_strategy": {
+        "wait_for_elements": [
+          ".event-card",
+          "div[class*='EventCard']",
+          "a[href*='/events/']"
+        ],
+        "javascript_execution": [
+          "window.scrollTo(0, document.body.scrollHeight);",
+          "document.querySelector('.load-more')?.click();",
+          "window.dispatchEvent(new Event('load'));"
+        ],
+        "primary_selectors": [
+          ".event-card",
+          "div[class*='EventCard']",
+          "article[class*='event']",
+          ".hackathon-card",
+          "a[href*='/events/']"
+        ],
+        "fallback_selectors": [
+          ".card[href*='/events/']",
+          "div[class*='card'] a[href*='ethglobal']",
+          "[data-event]",
+          ".upcoming-event"
+        ],
+        "data_attributes": [
+          "data-event",
+          "data-event-id",
+          "href",
+          "class"
+        ]
+      },
+      "field_extraction": {
+        "title": {
+          "selectors": [
+            "h2",
+            "h3",
+            ".title",
+            ".event-title",
+            "a[class*='title']"
+          ],
+          "regex_patterns": [
+            "^([^|]+)",
+            "(.{5,100})"
+          ],
+          "processing": null
+        },
+        "date": {
+          "selectors": [
+            ".date",
+            "time",
+            ".event-date",
+            "[class*='date']"
+          ],
+          "regex_patterns": [
+            "(\\w+ \\d{1,2}(?:st|nd|rd|th)?, \\d{4})",
+            "(\\d{4}-\\d{2}-\\d{2})"
+          ],
+          "processing": null
+        },
+        "location": {
+          "selectors": [
+            ".location",
+            ".venue",
+            "[class*='location']"
+          ],
+          "regex_patterns": [
+            "([^,]{3,30}, [A-Z]{2,3})",
+            "(Virtual|Online|Remote)"
+          ],
+          "processing": null
+        },
+        "url": {
+          "selectors": [
+            "a[href*='/events/']",
+            "a[href*='ethglobal']"
+          ],
+          "regex_patterns": [
+            "(https?://ethglobal\\.com/events/[^?\\s]+)",
+            "(/events/[^?\\s]+)"
+          ],
+          "processing": null
+        }
+      },
+      "optimization_settings": {
+        "scroll_behavior": "smooth",
+        "wait_timeout": 10000,
+        "load_timeout": 30000,
+        "retry_attempts": 3,
+        "dynamic_content_detection": true
+      }
+    },
+    "https://www.meetup.com/blockchain-developers-united/": {
+      "platform": "meetup.com",
+      "extraction_strategy": {
+        "wait_for_elements": [
+          "[data-testid='event-card']",
+          ".event-listing",
+          "a[href*='/events/']"
+        ],
+        "javascript_execution": [
+          "window.scrollTo(0, document.body.scrollHeight);",
+          "document.querySelector('[data-testid=\"load-more\"]')?.click();",
+          "setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 2000);"
+        ],
+        "primary_selectors": [
+          "[data-testid='event-card']",
+          ".event-listing",
+          "article[data-event-id]",
+          ".ds-card[href*='/events/']",
+          "[data-automation-id='eventCard']"
+        ],
+        "fallback_selectors": [
+          "a[href*='/events/']",
+          ".card-event",
+          "[role='article'][class*='event']",
+          ".list-item a[href*='meetup.com']"
+        ],
+        "data_attributes": [
+          "data-testid",
+          "data-event-id",
+          "data-automation-id",
+          "href"
+        ]
+      },
+      "field_extraction": {
+        "title": {
+          "selectors": [
+            "h3",
+            "h2",
+            "[data-testid='event-title']",
+            ".event-title"
+          ],
+          "regex_patterns": [
+            "^([^|]+)",
+            "(.{5,100})"
+          ],
+          "processing": null
+        },
+        "date": {
+          "selectors": [
+            "time",
+            ".date",
+            "[data-testid='event-date']",
+            "[class*='date']"
+          ],
+          "regex_patterns": [
+            "(\\w{3}, \\w{3} \\d{1,2})",
+            "(\\d{1,2}/\\d{1,2}/\\d{4})"
+          ],
+          "processing": null
+        },
+        "location": {
+          "selectors": [
+            ".location",
+            "[data-testid='event-location']",
+            "[class*='venue']"
+          ],
+          "regex_patterns": [
+            "([^,]{3,30}, [A-Z]{2})",
+            "(Online event)"
+          ],
+          "processing": null
+        },
+        "url": {
+          "selectors": [
+            "a[href*='/events/']",
+            "a[href*='meetup.com']"
+          ],
+          "regex_patterns": [
+            "(https?://www\\.meetup\\.com/[^/]+/events/[^?\\s]+)",
+            "(/events/[^?\\s]+)"
+          ],
+          "processing": null
+        }
+      },
+      "optimization_settings": {
+        "scroll_behavior": "smooth",
+        "wait_timeout": 10000,
+        "load_timeout": 30000,
+        "retry_attempts": 3,
+        "dynamic_content_detection": true
+      }
+    },
+    "https://devcon.org/en/": {
+      "platform": "devcon.org",
+      "extraction_strategy": {
+        "wait_for_elements": [
+          ".event-item",
+          "article[class*='event']",
+          "a[href*='/event']"
+        ],
+        "javascript_execution": [
+          "window.scrollTo(0, document.body.scrollHeight);",
+          "document.querySelector('.load-more')?.click();"
+        ],
+        "primary_selectors": [
+          ".event-item",
+          "article[class*='event']",
+          ".conference-event",
+          "[data-event]",
+          "a[href*='/event']"
+        ],
+        "fallback_selectors": [
+          ".card a[href*='devcon']",
+          "div[class*='session']",
+          "[role='article']",
+          ".schedule-item"
+        ],
+        "data_attributes": [
+          "data-event",
+          "data-event-id",
+          "href",
+          "class"
+        ]
+      },
+      "field_extraction": {},
+      "optimization_settings": {
+        "scroll_behavior": "smooth",
+        "wait_timeout": 10000,
+        "load_timeout": 30000,
+        "retry_attempts": 3,
+        "dynamic_content_detection": true
+      }
+    },
+    "https://www.eventbrite.com/d/ca--san-francisco/blockchain/": {
+      "platform": "eventbrite.com",
+      "extraction_strategy": {
+        "wait_for_elements": [
+          "[data-automation-id='event-card']",
+          ".event-card",
+          "a[href*='/e/']"
+        ],
+        "javascript_execution": [
+          "window.scrollTo(0, document.body.scrollHeight);",
+          "document.querySelector('[data-testid=\"load-more\"]')?.click();",
+          "setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 3000);"
+        ],
+        "primary_selectors": [
+          "[data-automation-id='event-card']",
+          ".event-card",
+          "article[data-event-id]",
+          ".discovery-event-card",
+          "a[href*='/e/']"
+        ],
+        "fallback_selectors": [
+          ".card[href*='eventbrite.com']",
+          "[role='article'][class*='event']",
+          ".search-result a[href*='/e/']"
+        ],
+        "data_attributes": [
+          "data-automation-id",
+          "data-event-id",
+          "href",
+          "data-testid"
+        ]
+      },
+      "field_extraction": {},
+      "optimization_settings": {
+        "scroll_behavior": "smooth",
+        "wait_timeout": 10000,
+        "load_timeout": 30000,
+        "retry_attempts": 3,
+        "dynamic_content_detection": true
+      }
+    }
+  },
+  "deployment_instructions": {
+    "steel_browser_integration": "Deploy via MCP Steel Browser tools",
+    "testing_urls": [
+      "https://lu.ma/crypto",
+      "https://ethglobal.com/events",
+      "https://www.meetup.com/blockchain-developers-united/",
+      "https://devcon.org/en/",
+      "https://www.eventbrite.com/d/ca--san-francisco/blockchain/"
+    ],
+    "expected_improvement": "25%+ event discovery rate increase",
+    "performance_target": "<10s per URL with enhanced selectors"
+  },
+  "enhanced_extraction_config": {
+    "version": "v2.0",
+    "updated": "2025-06-10",
+    "purpose": "Enhanced platform-specific selectors for 25%+ discovery improvement",
+    "platforms": {
+      "luma": {
+        "domain_patterns": [
+          "lu.ma",
+          "luma.co"
+        ],
+        "selectors": {
+          "event_cards": [
+            ".event-card",
+            "[data-testid='event-card']",
+            ".event-item",
+            ".event-listing",
+            "article[data-event-id]",
+            "[class*='event'][class*='card']"
+          ],
+          "event_links": [
+            "a[href*='/e/']",
+            "a[href*='/events/']",
+            "a[data-event-id]",
+            "a[class*='event']"
+          ],
+          "event_data": {
+            "title": [
+              "h1",
+              "h2",
+              "h3",
+              "[data-testid='event-title']",
+              ".event-title",
+              ".event-name"
+            ],
+            "date": [
+              "[data-testid='event-date']",
+              ".event-date",
+              ".date",
+              "time[datetime]",
+              "[class*='date']"
+            ],
+            "location": [
+              "[data-testid='event-location']",
+              ".event-location",
+              ".location",
+              "[class*='location']"
+            ],
+            "description": [
+              "[data-testid='event-description']",
+              ".event-description",
+              ".description",
+              "[class*='description']"
+            ]
+          }
+        },
+        "wait_strategies": {
+          "dynamic_content": true,
+          "wait_for": ".event-card, [data-testid='event-card']",
+          "timeout": 10000,
+          "scroll_for_lazy_load": true
+        }
+      },
+      "eventbrite": {
+        "domain_patterns": [
+          "eventbrite.com",
+          "eventbrite.co.uk"
+        ],
+        "selectors": {
+          "event_cards": [
+            "[data-testid='event-card']",
+            ".event-card",
+            ".search-main-content__events-list .event-card",
+            "[class*='eds-event-card']"
+          ],
+          "event_links": [
+            "a[href*='/e/']",
+            "a[data-event-id]",
+            ".event-card-link"
+          ],
+          "event_data": {
+            "title": [
+              "h1[data-testid='event-title']",
+              ".event-title",
+              ".event-card__title"
+            ],
+            "date": [
+              "[data-testid='event-date']",
+              ".event-card__date",
+              "time[datetime]"
+            ],
+            "location": [
+              "[data-testid='event-location']",
+              ".event-card__location",
+              ".location-info__address"
+            ]
+          }
+        },
+        "wait_strategies": {
+          "dynamic_content": true,
+          "wait_for": "[data-testid='event-card'], .event-card",
+          "timeout": 15000,
+          "scroll_for_lazy_load": true
+        }
+      },
+      "meetup": {
+        "domain_patterns": [
+          "meetup.com"
+        ],
+        "selectors": {
+          "event_cards": [
+            "[data-testid='event-card']",
+            ".event-card",
+            "[data-event-id]",
+            "[class*='eventCard']"
+          ],
+          "event_links": [
+            "a[href*='/events/']",
+            "a[data-event-id]"
+          ],
+          "event_data": {
+            "title": [
+              "h3[data-testid='event-title']",
+              ".event-card__title",
+              "h3"
+            ],
+            "date": [
+              "[data-testid='event-date']",
+              ".event-card__date",
+              "time"
+            ],
+            "location": [
+              "[data-testid='event-venue']",
+              ".event-card__venue"
+            ]
+          }
+        },
+        "wait_strategies": {
+          "dynamic_content": true,
+          "wait_for": "[data-testid='event-card'], .event-card",
+          "timeout": 12000,
+          "scroll_for_lazy_load": true
+        }
+      },
+      "ethglobal": {
+        "domain_patterns": [
+          "ethglobal.com"
+        ],
+        "selectors": {
+          "event_cards": [
+            ".event-card",
+            "[data-event]",
+            ".hackathon-card",
+            "[class*='event']"
+          ],
+          "event_links": [
+            "a[href*='/events/']",
+            "a[href*='/hackathons/']"
+          ],
+          "event_data": {
+            "title": [
+              "h1",
+              "h2",
+              "h3",
+              ".event-title",
+              ".hackathon-title"
+            ],
+            "date": [
+              ".event-date",
+              ".date",
+              "time"
+            ],
+            "location": [
+              ".event-location",
+              ".location"
+            ]
+          }
+        }
+      },
+      "coindesk": {
+        "domain_patterns": [
+          "coindesk.com"
+        ],
+        "selectors": {
+          "event_cards": [
+            ".event-card",
+            ".event-item",
+            "[data-module='event']"
+          ],
+          "event_links": [
+            "a[href*='/events/']"
+          ],
+          "event_data": {
+            "title": [
+              "h1",
+              "h2",
+              "h3",
+              ".event-title"
+            ],
+            "date": [
+              ".event-date",
+              ".date"
+            ],
+            "location": [
+              ".event-location"
+            ]
+          }
+        }
+      },
+      "ethcc": {
+        "domain_patterns": [
+          "ethcc.io"
+        ],
+        "selectors": {
+          "event_cards": [
+            ".event-card",
+            ".session-card",
+            "[data-session]",
+            ".program-item"
+          ],
+          "event_links": [
+            "a[href*='/program']",
+            "a[href*='/session']"
+          ],
+          "event_data": {
+            "title": [
+              "h1",
+              "h2",
+              "h3",
+              ".session-title",
+              ".event-title"
+            ],
+            "date": [
+              ".session-time",
+              ".event-time",
+              "time"
+            ],
+            "location": [
+              ".session-room",
+              ".event-location"
+            ]
+          }
+        }
+      }
+    },
+    "extraction_strategies": {
+      "comprehensive_discovery": {
+        "method": "multi_selector_approach",
+        "steps": [
+          "detect_platform",
+          "apply_platform_selectors",
+          "fallback_to_generic",
+          "extract_json_ld",
+          "validate_results"
+        ]
+      },
+      "anti_bot_progression": [
+        "STANDARD",
+        "ADVANCED",
+        "STEALTH"
+      ],
+      "quality_scoring": {
+        "required_fields": [
+          "title",
+          "date"
+        ],
+        "bonus_fields": [
+          "location",
+          "description"
+        ],
+        "minimum_score": 0.6
+      }
+    },
+    "global_selectors": {
+      "json_ld": [
+        "script[type='application/ld+json']"
+      ],
+      "microdata": [
+        "[itemtype*='Event']",
+        "[itemtype*='event']"
+      ],
+      "generic_events": [
+        "[class*='event']",
+        "[data-event]",
+        "[id*='event']"
+      ]
+    },
+    "enhancement_features": {
+      "dynamic_content_loading": true,
+      "lazy_loading_support": true,
+      "infinite_scroll_handling": true,
+      "javascript_execution": true,
+      "wait_for_content": true,
+      "multiple_selector_fallbacks": true,
+      "platform_detection": true,
+      "quality_filtering": true
+    }
+  }
+}

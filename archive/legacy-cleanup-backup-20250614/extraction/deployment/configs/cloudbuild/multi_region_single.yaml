@@ -1,0 +1,50 @@
+# Multi-Region Extraction Service Deployment Configuration
+# Single region deployment for testing
+
+steps:
+  # Step 1: Build Docker Image for multi-region service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '--no-cache',
+      '-t', 
+      'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/multi-region-extractor:test-v2', 
+      '-f', 
+      'chatbot_api/Dockerfile.multi-region', 
+      'chatbot_api'
+    ]
+    id: 'Build Multi-Region Docker Image'
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/multi-region-extractor:test-v2']
+    id: 'Push to Artifact Registry'
+
+  # Step 3: Deploy to US Central (Primary) - Test Single Region
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'multi-region-test'
+      - '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/multi-region-extractor:test-v2'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--memory=1Gi'
+      - '--cpu=1'
+      - '--timeout=300s'
+      - '--concurrency=10'
+      - '--max-instances=3'
+      - '--min-instances=0'
+      - '--port=8080'
+      - '--set-env-vars=REGION=us-central1,REGION_ID=us,COST_TIER=2,EXTRACTION_MODE=test'
+    id: 'Deploy to US Central'
+
+# Use Cloud Build logging and high-performance machine
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+# Build timeout
+timeout: '1200s'

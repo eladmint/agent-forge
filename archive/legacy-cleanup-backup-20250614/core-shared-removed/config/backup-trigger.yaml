@@ -1,0 +1,11 @@
+createTime: '2025-05-15T18:12:49.274693573Z'
+filename: cloudbuild.yaml
+github:
+  name: tokenhunter
+  owner: eladmint
+  push:
+    branch: ^main$
+id: 85d0e954-f2c6-4b02-a870-1b16e61a0659
+name: chatbot-api-main-branch-trigger
+resourceName: projects/tokenhunter-457310/locations/global/triggers/85d0e954-f2c6-4b02-a870-1b16e61a0659
+serviceAccount: projects/tokenhunter-457310/serviceAccounts/chatbot-api-sa@tokenhunter-457310.iam.gserviceaccount.com

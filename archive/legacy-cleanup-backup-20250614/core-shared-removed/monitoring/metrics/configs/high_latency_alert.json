@@ -1,0 +1,35 @@
+{
+    "displayName": "High API Latency Alert",
+    "documentation": {
+        "content": "High API latency detected. Please check the API logs for potential issues causing slowdowns.",
+        "mimeType": "text/markdown"
+    },
+    "conditions": [
+        {
+            "displayName": "Request latency > 3 seconds",
+            "conditionThreshold": {
+                "filter": "metric.type=\"run.googleapis.com/request_latencies\" resource.type=\"cloud_run_revision\" resource.label.service_name=\"chatbot-api-service-v2\" metric.label.response_code=\"200\"",
+                "comparison": "COMPARISON_GT",
+                "thresholdValue": 3,
+                "duration": "60s",
+                "trigger": {
+                    "count": 1
+                },
+                "aggregations": [
+                    {
+                        "alignmentPeriod": "60s",
+                        "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                    }
+                ]
+            }
+        }
+    ],
+    "alertStrategy": {
+        "autoClose": "604800s"
+    },
+    "combiner": "OR",
+    "enabled": true,
+    "notificationChannels": [
+        "projects/tokenhunter-457310/notificationChannels/15236516282201279799"
+    ]
+}

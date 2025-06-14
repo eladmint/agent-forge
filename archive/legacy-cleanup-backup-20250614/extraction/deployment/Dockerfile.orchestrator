@@ -1,0 +1,47 @@
+# Dockerfile for Production Enhanced Orchestrator Service
+# ENTERPRISE DEPLOYMENT: Uses src/ structure and proper paths
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching (enterprise structure)
+COPY requirements.txt .
+COPY src/extraction/requirements.txt ./extraction_requirements.txt 2>/dev/null || echo "No extraction requirements"
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt && \
+    if [ -f extraction_requirements.txt ]; then pip install --no-cache-dir -r extraction_requirements.txt; fi
+
+# Copy enterprise project structure
+COPY src/ ./src/
+COPY utils/ ./utils/ 2>/dev/null || echo "No utils directory"
+COPY scripts/ ./scripts/ 2>/dev/null || echo "No scripts directory"
+
+# Set Python path for enterprise structure
+ENV PYTHONPATH="/app:/app/src:${PYTHONPATH}"
+
+# Create a non-root user
+RUN useradd -m orchestrator
+USER orchestrator
+
+# Expose the port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK CMD curl --fail http://localhost:8080/health
+
+# Set environment variables for FastAPI
+ENV UVICORN_HOST=0.0.0.0
+ENV UVICORN_PORT=8080
+
+# Run the production orchestrator service using uvicorn (enterprise structure)
+CMD ["python", "-m", "uvicorn", "scripts.orchestrator.production_enhanced_orchestrator_service:app", "--host", "0.0.0.0", "--port", "8080"]

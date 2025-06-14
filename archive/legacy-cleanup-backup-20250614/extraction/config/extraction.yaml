@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=
+# =============================================================================
+# EXTRACTION SERVICE CONFIGURATION
+# Service-specific overrides for extraction service
+# =============================================================================
+
+service:
+  name: "enhanced-multi-region-extractor"
+  type: "extraction"
+  description: "Enhanced multi-region extraction service with Steel Browser"
+
+# Service-specific resource allocation
+resources:
+  memory: "4Gi"
+  cpu: "2"
+  max_instances: 5
+  min_instances: 1
+  concurrency: 40
+  timeout: 1800  # 30 minutes for complex extractions
+
+# Extraction-specific configuration
+extraction:
+  steel_browser:
+    enabled: true
+    timeout: 300000  # 5 minutes
+    max_instances: 3
+    anti_bot_level: "ADVANCED"
+    session_timeout: 1800000  # 30 minutes
+    
+  regions:
+    primary: "us-central1"
+    secondary: "europe-west1"
+    
+  rate_limiting:
+    requests_per_minute: 30
+    concurrent_extractions: 10
+    
+  retry_policy:
+    max_attempts: 3
+    backoff_multiplier: 2
+    initial_delay: 1000
+
+# Steel Browser configuration
+steel_browser:
+  capabilities:
+    captcha_solving: true
+    javascript_execution: true
+    session_persistence: true
+    anti_detection: true
+    proxy_rotation: true
+    
+  performance:
+    page_load_timeout: 30000
+    element_timeout: 15000
+    screenshot_quality: "medium"
+    
+  cost_optimization:
+    session_reuse: true
+    resource_blocking: true
+    cache_enabled: true
+
+# Database configuration  
+database:
+  connection_pool_size: 15
+  max_connections: 30
+  query_timeout: 60
+  bulk_insert_size: 100
+
+# Service account
+service_account: "nuru-ai-production@tokenhunter-457310.iam.gserviceaccount.com"
+
+# Environment variables
+environment_variables:
+  PYTHONPATH: "/app"
+  SERVICE_NAME: "extraction"
+  LOG_LEVEL: "INFO"
+  ENVIRONMENT: "production"
+  STEEL_BROWSER_ENABLED: "true"
+  REGION: "${REGION:-us-central1}"
+  COST_TIER: "${COST_TIER:-2}" 

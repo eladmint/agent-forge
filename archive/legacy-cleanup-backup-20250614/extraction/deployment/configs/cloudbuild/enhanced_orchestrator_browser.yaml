@@ -1,0 +1,47 @@
+steps:
+  # Build the Enhanced Orchestrator with Browser Automation
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-f', 'deployment/docker/Dockerfile.enhanced-orchestrator-browser',
+      '-t', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:latest',
+      '.'
+    ]
+
+  # Push to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:$BUILD_ID']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:latest']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-orchestrator-browser'
+      - '--image=gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:$BUILD_ID'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--memory=2Gi'
+      - '--cpu=2'
+      - '--concurrency=10'
+      - '--max-instances=3'
+      - '--min-instances=0'
+      - '--timeout=600'
+      - '--set-env-vars=VERTEX_PROJECT_ID=$PROJECT_ID,VERTEX_LOCATION=us-central1,LOG_LEVEL=INFO'
+      - '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+  
+timeout: '1200s'
+
+images:
+  - 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:$BUILD_ID'
+  - 'gcr.io/$PROJECT_ID/enhanced-orchestrator-browser:latest'

@@ -1,0 +1,35 @@
+{
+    "displayName": "High API Error Rate Alert",
+    "documentation": {
+        "content": "High error rate detected in the API. Please check the API logs for specific error messages and investigate the root cause.",
+        "mimeType": "text/markdown"
+    },
+    "conditions": [
+        {
+            "displayName": "Error count > 5 in 5 minutes",
+            "conditionThreshold": {
+                "filter": "metric.type=\"run.googleapis.com/request_count\" resource.type=\"cloud_run_revision\" resource.label.service_name=\"chatbot-api-service-v2\" metric.label.response_code_class=\"5xx\"",
+                "comparison": "COMPARISON_GT",
+                "thresholdValue": 5,
+                "duration": "300s",
+                "trigger": {
+                    "count": 1
+                },
+                "aggregations": [
+                    {
+                        "alignmentPeriod": "300s",
+                        "perSeriesAligner": "ALIGN_SUM"
+                    }
+                ]
+            }
+        }
+    ],
+    "alertStrategy": {
+        "autoClose": "604800s"
+    },
+    "combiner": "OR",
+    "enabled": true,
+    "notificationChannels": [
+        "projects/tokenhunter-457310/notificationChannels/15236516282201279799"
+    ]
+}

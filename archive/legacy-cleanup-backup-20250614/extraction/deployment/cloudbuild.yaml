@@ -1,0 +1,58 @@
+# Nuru AI Extraction System Cloud Build Configuration
+# ENTERPRISE DEPLOYMENT: Uses src/ structure and proper IAM policies
+
+steps:
+  # Add explicit IAM policy binding to prevent deployment hanging
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'projects', 'add-iam-policy-binding', '$PROJECT_ID',
+      '--member=serviceAccount:$PROJECT_ID@appspot.gserviceaccount.com',
+      '--role=roles/iam.serviceAccountUser',
+      '--quiet'
+    ]
+
+  # Build the Docker image with enterprise structure
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/production-orchestrator:latest',
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/production-orchestrator:$BUILD_ID',
+      '-f', 'src/extraction/deployment/Dockerfile',
+      '.'
+    ]
+
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/production-orchestrator:latest'
+    ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/production-orchestrator:$BUILD_ID'
+    ]
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', 'production-orchestrator',
+      '--image', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/production-orchestrator:latest',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '4Gi',
+      '--cpu', '2',
+      '--timeout', '3600',
+      '--concurrency', '10',
+      '--min-instances', '1',
+      '--max-instances', '5'
+    ]
+
+# Specify the service account with necessary permissions
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Build timeout
+timeout: '1200s' 

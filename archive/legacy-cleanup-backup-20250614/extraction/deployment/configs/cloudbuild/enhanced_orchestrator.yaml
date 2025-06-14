@@ -1,0 +1,89 @@
+# Cloud Build configuration for Nuru AI Enhanced Orchestrator
+# Deploys Enhanced Orchestrator with advanced capabilities to Cloud Run
+
+steps:
+  # Build the Enhanced Orchestrator container
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-f', 'deployment/docker/Dockerfile.orchestrator',
+      '-t', 'gcr.io/$PROJECT_ID/nuru-ai-enhanced-orchestrator:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/nuru-ai-enhanced-orchestrator:latest',
+      '.'
+    ]
+    id: 'build-enhanced-orchestrator'
+
+  # Push the container to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/nuru-ai-enhanced-orchestrator:$BUILD_ID']
+    id: 'push-container'
+    waitFor: ['build-enhanced-orchestrator']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'run', 'deploy', 'nuru-ai-enhanced-orchestrator',
+      '--image', 'gcr.io/$PROJECT_ID/nuru-ai-enhanced-orchestrator:$BUILD_ID',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '4Gi',
+      '--cpu', '2',
+      '--timeout', '600',
+      '--concurrency', '20',
+      '--max-instances', '5',
+      '--min-instances', '0',
+      '--port', '8080',
+      '--set-env-vars', 'PYTHONPATH=/app,PYTHONUNBUFFERED=1,LOG_TO_JSON=true,LOG_LEVEL=INFO',
+      '--set-secrets', 'SUPABASE_URL=supabase-url:latest,SUPABASE_KEY=supabase-key:latest,VERTEX_PROJECT_ID=vertex-project-id:latest,VERTEX_LOCATION=vertex-location:latest,GOOGLE_API_KEY=google-api-key:latest',
+      '--service-account', 'chatbot-api-sa@$PROJECT_ID.iam.gserviceaccount.com'
+    ]
+    id: 'deploy-to-cloud-run'
+    waitFor: ['push-container']
+
+  # Health check validation
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "🔍 Validating Enhanced Orchestrator deployment..."
+        
+        # Get service URL
+        SERVICE_URL=$$(gcloud run services describe nuru-ai-enhanced-orchestrator \
+          --region=us-central1 \
+          --format='value(status.url)')
+        
+        echo "Service URL: $$SERVICE_URL"
+        
+        # Wait for service to be ready
+        sleep 30
+        
+        # Test health endpoint
+        echo "Testing health endpoint..."
+        curl -f "$$SERVICE_URL/health" || exit 1
+        
+        # Test basic extraction (with timeout)
+        echo "Testing basic extraction capability..."
+        timeout 60 curl -f -X POST "$$SERVICE_URL/extract" \
+          -H "Content-Type: application/json" \
+          -d '{"urls":["https://lu.ma/test"],"max_concurrent":1,"visual_intelligence":false}' \
+          || echo "⚠️  Basic extraction test timed out (expected for this test URL)"
+        
+        echo "✅ Enhanced Orchestrator deployment validation completed"
+    id: 'validate-deployment'
+    waitFor: ['deploy-to-cloud-run']
+
+# Build configuration
+options:
+  # Use high-CPU machine for faster builds
+  machineType: 'E2_HIGHCPU_8'
+  # Use Cloud Logging only
+  logging: 'CLOUD_LOGGING_ONLY'
+
+# Build timeout (20 minutes)
+timeout: '1200s'
+
+# Service account for deployment
+serviceAccount: 'projects/$PROJECT_ID/serviceAccounts/chatbot-api-sa@$PROJECT_ID.iam.gserviceaccount.com'

@@ -1,0 +1,49 @@
+steps:
+  # Build the Enhanced Orchestrator Calendar Extraction Service
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-calendar-service'
+    args: [
+      'build',
+      '-f', 'deployment/docker/Dockerfile.calendar-extraction',
+      '-t', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:latest',
+      '.'
+    ]
+    timeout: 900s
+
+  # Push to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:$BUILD_ID']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:latest']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-orchestrator-calendar-extraction'
+      - '--image=gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:$BUILD_ID'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--memory=4Gi'
+      - '--cpu=2'
+      - '--concurrency=5'
+      - '--max-instances=3'
+      - '--min-instances=0'
+      - '--timeout=900'
+      - '--set-env-vars=VERTEX_PROJECT_ID=$PROJECT_ID,VERTEX_LOCATION=us-central1,LOG_LEVEL=INFO'
+      - '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+  
+timeout: '1500s'
+
+images:
+  - 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:$BUILD_ID'
+  - 'gcr.io/$PROJECT_ID/enhanced-orchestrator-calendar-extraction:latest'

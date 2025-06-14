@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agent-forge": {
+      "command": "python",
+      "args": ["/Users/eladm/Projects/token/tokenhunter/agent_forge/mcp_server.py"],
+      "env": {
+        "PYTHONPATH": "/Users/eladm/Projects/token/tokenhunter/agent_forge"
+      }
+    }
+  }
+}

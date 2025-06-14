@@ -1,0 +1,85 @@
+# Enterprise Enhanced Multi-Region Deployment
+# Follows Nuru AI Enterprise Deployment Standards
+# Priority: 01 = Primary deployment method
+
+steps:
+  # Build the container image from project root context
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest',
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:$BUILD_ID',
+      '-f', 'production/services/Dockerfile.enhanced-multi-region',
+      '.'
+    ]
+    dir: '.'
+
+  # Push the latest image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest'
+    ]
+
+  # Push the build-specific image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:$BUILD_ID'
+    ]
+
+  # Deploy to Cloud Run US Central (Primary Region)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'enhanced-multi-region-us-central',
+      '--image', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest',
+      '--region', 'us-central1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '4Gi',
+      '--cpu', '2',
+      '--timeout', '1800',
+      '--min-instances', '1',
+      '--max-instances', '5',
+      '--concurrency', '10',
+      '--set-env-vars', 'REGION=us-central1,COST_TIER=2,DEPLOYMENT_TYPE=ENTERPRISE,BUILD_ID=$BUILD_ID'
+    ]
+
+  # Deploy to Cloud Run Europe West (Secondary Region)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'enhanced-multi-region-europe-west',
+      '--image', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest',
+      '--region', 'europe-west1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--memory', '4Gi',
+      '--cpu', '2',
+      '--timeout', '1800',
+      '--min-instances', '0',
+      '--max-instances', '3',
+      '--concurrency', '10',
+      '--set-env-vars', 'REGION=europe-west1,COST_TIER=3,DEPLOYMENT_TYPE=ENTERPRISE,BUILD_ID=$BUILD_ID'
+    ]
+
+# Enterprise Cloud Build configuration
+options:
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+  sourceProvenanceHash: ['SHA256']
+
+# Extended timeout for enterprise builds
+timeout: '2400s'
+
+# Images to be pushed to Artifact Registry
+images:
+  - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest'
+  - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:$BUILD_ID'
+
+# Enterprise metadata
+# substitutions:
+#   _SERVICE_NAME: 'enhanced-multi-region-extractor'
+#   _DEPLOYMENT_TIER: 'ENTERPRISE'
+#   _BUILD_ENV: 'PRODUCTION'

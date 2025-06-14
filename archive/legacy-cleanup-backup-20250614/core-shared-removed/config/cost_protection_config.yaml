@@ -1,0 +1,117 @@
+# Nuru AI Cost Protection Configuration
+# Comprehensive cost controls to prevent accidental high usage
+
+# Google Cloud Cost Controls
+google_cloud:
+  # Budget Alerts (set up via Cloud Console or gcloud CLI)
+  budgets:
+    monthly_limit: 100.00  # USD per month
+    alert_thresholds: [50, 75, 90, 95]  # Percentage thresholds
+    notification_emails:
+      - "alerts@nuru-ai.com"
+      - "admin@nuru-ai.com"
+  
+  # Cloud Run Service Limits
+  cloud_run:
+    max_instances: 10  # Maximum concurrent instances
+    max_cpu: 2  # Maximum CPU per instance
+    max_memory: "4Gi"  # Maximum memory per instance
+    max_timeout: 300  # Maximum request timeout (seconds)
+    max_concurrency: 80  # Maximum concurrent requests per instance
+  
+  # API Quotas
+  api_quotas:
+    vertex_ai_requests_per_minute: 100
+    cloud_build_builds_per_day: 10
+    cloud_run_requests_per_minute: 1000
+  
+  # Steel Browser Specific Limits
+  steel_browser:
+    max_sessions_per_hour: 50
+    max_extraction_time_minutes: 5
+    max_concurrent_extractions: 5
+
+# Supabase Cost Controls
+supabase:
+  # Database Limits
+  database:
+    max_connections: 20  # Maximum concurrent connections
+    max_rows_per_table: 100000  # Prevent unlimited growth
+    max_storage_gb: 5  # Database storage limit
+    query_timeout_seconds: 30  # Maximum query execution time
+  
+  # API Limits
+  api:
+    requests_per_minute: 1000  # API request rate limit
+    max_batch_size: 100  # Maximum batch insert size
+    max_response_size_mb: 10  # Maximum response size
+  
+  # Storage Limits
+  storage:
+    max_file_size_mb: 50  # Maximum file upload size
+    max_total_storage_gb: 2  # Total storage bucket limit
+    bandwidth_limit_gb_per_month: 10  # Monthly bandwidth limit
+
+# Application-Level Cost Controls
+application:
+  # Extraction Rate Limits
+  extraction:
+    max_urls_per_batch: 10  # Maximum URLs processed per batch
+    delay_between_requests_seconds: 1  # Minimum delay between requests
+    max_daily_extractions: 500  # Maximum extractions per day
+    max_retries_per_url: 3  # Maximum retry attempts
+  
+  # Steel Browser Controls
+  steel_browser:
+    session_timeout_minutes: 10  # Automatic session cleanup
+    max_page_wait_seconds: 30  # Maximum page load wait time
+    anti_bot_level_limits:
+      STANDARD: 100  # requests per hour
+      ADVANCED: 50   # requests per hour  
+      STEALTH: 20    # requests per hour
+  
+  # Circuit Breaker Settings
+  circuit_breaker:
+    failure_threshold: 5  # Failed requests before circuit opens
+    timeout_seconds: 60  # Circuit breaker timeout
+    success_threshold: 3  # Successful requests to close circuit
+  
+  # Emergency Stops
+  emergency:
+    max_cost_per_hour: 5.00  # USD - emergency stop threshold
+    max_errors_per_minute: 10  # Error rate emergency stop
+    cpu_usage_limit_percent: 80  # CPU usage emergency stop
+
+# Monitoring and Alerting
+monitoring:
+  # Cost Tracking
+  cost_tracking:
+    check_interval_minutes: 15  # How often to check costs
+    alert_on_projection: true  # Alert if projected to exceed budget
+    log_all_costs: true  # Log detailed cost information
+  
+  # Performance Monitoring
+  performance:
+    track_response_times: true
+    track_success_rates: true
+    track_resource_usage: true
+  
+  # Alert Channels
+  alerts:
+    slack_webhook: "${SLACK_COST_ALERTS_WEBHOOK}"
+    email_notifications: true
+    dashboard_alerts: true
+
+# Fail-Safe Mechanisms
+failsafe:
+  # Automatic Shutdowns
+  auto_shutdown:
+    on_budget_exceed: true  # Shutdown if budget exceeded
+    on_error_threshold: true  # Shutdown on high error rates
+    on_resource_limit: true  # Shutdown on resource exhaustion
+  
+  # Gradual Throttling
+  throttling:
+    enable_adaptive_throttling: true
+    reduce_rate_on_errors: true
+    increase_delays_on_limits: true 

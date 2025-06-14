@@ -1,0 +1,60 @@
+# Google Cloud Build configuration for Production Enhanced Orchestrator Service
+# ENTERPRISE DEPLOYMENT: Uses src/ structure and proper IAM policies
+
+steps:
+  # Add explicit IAM policy binding to prevent deployment hanging
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'projects', 'add-iam-policy-binding', '$PROJECT_ID',
+      '--member=serviceAccount:$PROJECT_ID@appspot.gserviceaccount.com',
+      '--role=roles/iam.serviceAccountUser',
+      '--quiet'
+    ]
+    
+  # Build the Docker image with enterprise structure
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'gcr.io/$PROJECT_ID/production-orchestrator:$BUILD_ID',
+      '-t', 'gcr.io/$PROJECT_ID/production-orchestrator:latest',
+      '-f', 'src/extraction/deployment/configs/dockerfiles/06_Dockerfile.production_orchestrator',
+      '.'
+    ]
+
+  # Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/production-orchestrator:$BUILD_ID']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/production-orchestrator:latest']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'production-orchestrator',
+      '--image=gcr.io/$PROJECT_ID/production-orchestrator:$BUILD_ID',
+      '--region=us-central1',
+      '--platform=managed',
+      '--allow-unauthenticated',
+      '--port=8080',
+      '--memory=4Gi',
+      '--cpu=2',
+      '--min-instances=0',
+      '--max-instances=3',
+      '--concurrency=5',
+      '--timeout=3600',
+      '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest,VERTEX_PROJECT_ID=VERTEX_PROJECT_ID:latest',
+      '--set-env-vars=PYTHONPATH=/app,GCP_PROJECT_ID=tokenhunter-457310'
+    ]
+
+# Store build artifacts
+images:
+  - 'gcr.io/$PROJECT_ID/production-orchestrator:$BUILD_ID'
+  - 'gcr.io/$PROJECT_ID/production-orchestrator:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 2400s  # 40 minutes 

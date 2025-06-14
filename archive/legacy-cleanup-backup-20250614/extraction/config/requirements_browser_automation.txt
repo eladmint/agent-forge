@@ -1,0 +1,15 @@
+# Browser Automation Requirements for Enhanced Orchestrator
+# Add these to your main requirements.txt or install separately
+
+# Playwright for browser automation
+playwright>=1.40.0
+
+# Additional dependencies for robust browser automation
+beautifulsoup4>=4.12.0  # Already included but ensuring version
+aiohttp>=3.8.0          # Already included but ensuring version
+
+# Optional: For screenshots and debugging
+Pillow>=10.0.0
+
+# For robust URL parsing and handling
+urllib3>=2.0.0

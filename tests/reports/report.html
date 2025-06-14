@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title id="head-title">report.html</title>
+      <style type="text/css">body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#environment ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+.col-links__extra {
+  margin-right: 3px;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.logwrapper {
+  max-height: 230px;
+  overflow-y: scroll;
+  background-color: #e6e6e6;
+}
+.logwrapper.expanded {
+  max-height: none;
+}
+.logwrapper.expanded .logexpander:after {
+  content: "collapse [-]";
+}
+.logwrapper .logexpander {
+  z-index: 1;
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 10px 0 10px calc(100% - 80px);
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+.logwrapper .logexpander:after {
+  content: "expand [+]";
+}
+.logwrapper .logexpander:hover {
+  color: #000;
+  border-color: #000;
+}
+.logwrapper .log {
+  min-height: 40px;
+  position: relative;
+  top: -50px;
+  height: calc(100% + 50px);
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+  padding-right: 80px;
+  white-space: pre-wrap;
+}
+
+div.media {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin: 0 5px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: 25px auto 25px;
+  align-items: center;
+  flex: 1 1;
+  overflow: hidden;
+  height: 200px;
+}
+
+.media-container--fullscreen {
+  grid-template-columns: 0px auto 0px;
+}
+
+.media-container__nav--right,
+.media-container__nav--left {
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-container__viewport {
+  cursor: pointer;
+  text-align: center;
+  height: inherit;
+}
+.media-container__viewport img,
+.media-container__viewport video {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
+.media__name,
+.media__counter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 25px;
+  align-items: center;
+}
+
+.collapsible td:not(.col-links) {
+  cursor: pointer;
+}
+.collapsible td:not(.col-links):hover::after {
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.col-result {
+  width: 130px;
+}
+.col-result:hover::after {
+  content: " (hide details)";
+}
+
+.col-result.collapsed:hover::after {
+  content: " (show details)";
+}
+
+#environment-header h2:hover::after {
+  content: " (hide details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#environment-header.collapsed h2:hover::after {
+  content: " (show details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+.sortable.desc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: -12.5px;
+  border: 10px solid #4caf50;
+  border-bottom: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.sortable.asc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: 12.5px;
+  border: 10px solid #4caf50;
+  border-top: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.hidden, .summary__reload__button.hidden {
+  display: none;
+}
+
+.summary__data {
+  flex: 0 0 550px;
+}
+.summary__reload {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+}
+.summary__reload__button {
+  flex: 0 0 300px;
+  display: flex;
+  color: white;
+  font-weight: bold;
+  background-color: #4caf50;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.summary__reload__button:hover {
+  background-color: #46a049;
+}
+.summary__spacer {
+  flex: 0 0 550px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters,
+.collapse {
+  display: flex;
+  align-items: center;
+}
+.filters button,
+.collapse button {
+  color: #999;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.filters button:hover,
+.collapse button:hover {
+  color: #ccc;
+}
+
+.filter__label {
+  margin-right: 10px;
+}
+
+      </style>
+    
+  </head>
+  <body>
+    <h1 id="title">report.html</h1>
+    <p>Report generated on 14-Jun-2025 at 12:09:00 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.1.1</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</th>
+        </tr>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left"><</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">></div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">88 tests took 00:00:40.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" />
+            <span class="failed">8 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" />
+            <span class="passed">80 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled/>
+            <span class="skipped">0 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled/>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled/>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled/>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled/>
+            <span class="rerun">0 Reruns</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  </body>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.12.7&#34;, &#34;Platform&#34;: &#34;macOS-15.4.1-arm64-arm-64bit&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;8.3.5&#34;, &#34;pluggy&#34;: &#34;1.6.0&#34;}, &#34;Plugins&#34;: {&#34;xdist&#34;: &#34;3.7.0&#34;, &#34;anyio&#34;: &#34;4.9.0&#34;, &#34;html&#34;: &#34;4.1.1&#34;, &#34;json-report&#34;: &#34;1.5.0&#34;, &#34;timeout&#34;: &#34;2.4.0&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;, &#34;Faker&#34;: &#34;37.3.0&#34;, &#34;benchmark&#34;: &#34;5.1.0&#34;, &#34;asyncio&#34;: &#34;0.26.0&#34;, &#34;mock&#34;: &#34;3.14.0&#34;, &#34;cov&#34;: &#34;6.1.1&#34;, &#34;aiohttp&#34;: &#34;1.1.0&#34;}}, &#34;tests&#34;: {&#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_list_command&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_list_command&#34;, &#34;duration&#34;: &#34;00:00:07&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_list_command&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:07&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_help_command&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_help_command&#34;, &#34;duration&#34;: &#34;463 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_help_command&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;463 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_version_command&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_version_command&#34;, &#34;duration&#34;: &#34;611 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_version_command&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;611 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_simple_navigation_execution&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_simple_navigation_execution&#34;, &#34;duration&#34;: &#34;00:00:05&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_simple_navigation_execution&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:05&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_nmkr_auditor_execution&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_nmkr_auditor_execution&#34;, &#34;duration&#34;: &#34;00:00:05&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_nmkr_auditor_execution&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:05&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_dry_run&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_dry_run&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_dry_run&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_verbose_mode&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_verbose_mode&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_verbose_mode&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_invalid_agent&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_invalid_agent&#34;, &#34;duration&#34;: &#34;00:00:05&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCLIWorkflows::test_cli_invalid_agent&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:05&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests/e2e/test_framework_workflows.py:134: in test_cli_invalid_agent\n    assert &amp;quot;not found&amp;quot; in result.stdout.lower() or &amp;quot;error&amp;quot; in result.stdout.lower()\nE   assert (&amp;#x27;not found&amp;#x27; in &amp;#x27;&amp;#x27; or &amp;#x27;error&amp;#x27; in &amp;#x27;&amp;#x27;)\nE    +  where &amp;#x27;&amp;#x27; = &amp;lt;built-in method lower of str object at 0x100b671f8&amp;gt;()\nE    +    where &amp;lt;built-in method lower of str object at 0x100b671f8&amp;gt; = &amp;#x27;&amp;#x27;.lower\nE    +      where &amp;#x27;&amp;#x27; = CompletedProcess(args=[&amp;#x27;python&amp;#x27;, &amp;#x27;cli.py&amp;#x27;, &amp;#x27;run&amp;#x27;, &amp;#x27;nonexistent_agent&amp;#x27;], returncode=1, stdout=&amp;#x27;&amp;#x27;, stderr=&amp;quot;2025-06-14 12...orge.cli - ERROR - Agent execution failed: Agent &amp;#x27;nonexistent_agent&amp;#x27; not found. Use &amp;#x27;list&amp;#x27; to see available agents.\\n&amp;quot;).stdout\nE    +  and   &amp;#x27;&amp;#x27; = &amp;lt;built-in method lower of str object at 0x100b671f8&amp;gt;()\nE    +    where &amp;lt;built-in method lower of str object at 0x100b671f8&amp;gt; = &amp;#x27;&amp;#x27;.lower\nE    +      where &amp;#x27;&amp;#x27; = CompletedProcess(args=[&amp;#x27;python&amp;#x27;, &amp;#x27;cli.py&amp;#x27;, &amp;#x27;run&amp;#x27;, &amp;#x27;nonexistent_agent&amp;#x27;], returncode=1, stdout=&amp;#x27;&amp;#x27;, stderr=&amp;quot;2025-06-14 12...orge.cli - ERROR - Agent execution failed: Agent &amp;#x27;nonexistent_agent&amp;#x27; not found. Use &amp;#x27;list&amp;#x27; to see available agents.\\n&amp;quot;).stdout\n&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_agent_discovery_integration&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_agent_discovery_integration&#34;, &#34;duration&#34;: &#34;00:00:03&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_agent_discovery_integration&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:03&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests/e2e/test_framework_workflows.py:162: in test_agent_discovery_integration\n    agent = agent_class()\nexamples/simple_navigation_agent.py:37: in __init__\n    raise ValueError(&amp;quot;URL must be provided either as parameter or in config&amp;quot;)\nE   ValueError: URL must be provided either as parameter or in config\n&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_configuration_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_configuration_workflow&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_configuration_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_error_propagation_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_error_propagation_workflow&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_error_propagation_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_browser_integration_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_browser_integration_workflow&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkIntegration::test_browser_integration_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_simple_navigation_complete_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_simple_navigation_complete_workflow&#34;, &#34;duration&#34;: &#34;238 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_simple_navigation_complete_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;238 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;/opt/anaconda3/lib/python3.12/unittest/mock.py:918: in assert_called\n    raise AssertionError(msg)\nE   AssertionError: Expected &amp;#x27;navigate&amp;#x27; to have been called.\n\nDuring handling of the above exception, another exception occurred:\ntests/e2e/test_framework_workflows.py:255: in test_simple_navigation_complete_workflow\n    mock_browser_client.navigate.assert_called()\nE   AssertionError: Expected &amp;#x27;navigate&amp;#x27; to have been called.\n\n------------------------------ Captured log call -------------------------------\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    agent_forge.SimpleNavigationAgent:simple_navigation_agent.py:72 Failed to retrieve content from https://example.com. Response: {&amp;#x27;success&amp;#x27;: False, &amp;#x27;error&amp;#x27;: &amp;#x27;HTTP 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}&amp;#x27;, &amp;#x27;page_title&amp;#x27;: None}\n\n&#34;}], &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_nmkr_auditor_complete_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_nmkr_auditor_complete_workflow&#34;, &#34;duration&#34;: &#34;201 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_nmkr_auditor_complete_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;201 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Complete workflow test\n\ud83c\udf10 URL: https://cardano.org\n\u23f0 Timestamp: 2025-06-14T12:08:55.220365\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: b361452f77ad632b07b87bdf96b40e93...\n   IPFS: bafybeigb361452f77ad632b07b87bdf96b40e938108ed232749\n   Size: 3,323 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n------------------------------ Captured log call -------------------------------\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    asyncio:base_events.py:1820 Unclosed client session\nclient_session: &amp;lt;aiohttp.client.ClientSession object at 0x10db91fd0&amp;gt;\nERROR    asyncio:base_events.py:1820 Unclosed connector\nconnections: [&amp;#x27;deque([(&amp;lt;aiohttp.client_proto.ResponseHandler object at 0x10db6b050&amp;gt;, 118156.257866958)])&amp;#x27;]\nconnector: &amp;lt;aiohttp.connector.TCPConnector object at 0x10db92000&amp;gt;\n\n&#34;}], &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_multi_agent_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_multi_agent_workflow&#34;, &#34;duration&#34;: &#34;207 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestCompleteWorkflows::test_multi_agent_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;207 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;cli.py:107: in run_agent\n    agent = agent_class(**kwargs)\nE   TypeError: SimpleNavigationAgent.__init__() got an unexpected keyword argument &amp;#x27;task_description&amp;#x27;\n\nDuring handling of the above exception, another exception occurred:\ntests/e2e/test_framework_workflows.py:332: in test_multi_agent_workflow\n    result = await forge.run_agent(\ncli.py:109: in run_agent\n    raise ValueError(f&amp;quot;Failed to create agent &amp;#x27;{agent_name}&amp;#x27;: {e}&amp;quot;)\nE   ValueError: Failed to create agent &amp;#x27;simple_navigation&amp;#x27;: SimpleNavigationAgent.__init__() got an unexpected keyword argument &amp;#x27;task_description&amp;#x27;\n\nDuring handling of the above exception, another exception occurred:\ntests/e2e/test_framework_workflows.py:340: in test_multi_agent_workflow\n    pytest.fail(f&amp;quot;Agent {agent_name} failed: {e}&amp;quot;)\nE   Failed: Agent simple_navigation failed: Failed to create agent &amp;#x27;simple_navigation&amp;#x27;: SimpleNavigationAgent.__init__() got an unexpected keyword argument &amp;#x27;task_description&amp;#x27;\n\n----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Test nmkrauditor\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:55.426702\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: b23dc4e982ede0916b7f57f868cc6dfe...\n   IPFS: bafybeigb23dc4e982ede0916b7f57f868cc6dfe967004dd49cd\n   Size: 3,274 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n------------------------------ Captured log call -------------------------------\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    asyncio:base_events.py:1820 Unclosed client session\nclient_session: &amp;lt;aiohttp.client.ClientSession object at 0x10db9a360&amp;gt;\nERROR    asyncio:base_events.py:1820 Unclosed connector\nconnections: [&amp;#x27;deque([(&amp;lt;aiohttp.client_proto.ResponseHandler object at 0x10db6b050&amp;gt;, 118156.462560375)])&amp;#x27;]\nconnector: &amp;lt;aiohttp.connector.TCPConnector object at 0x10db9a390&amp;gt;\n\n&#34;}], &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_documentation_structure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_documentation_structure&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_documentation_structure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_examples_structure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_examples_structure&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_examples_structure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_project_structure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_project_structure&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestDocumentationIntegration::test_project_structure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_cli_startup_performance&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_cli_startup_performance&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_cli_startup_performance&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_agent_initialization_performance&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_agent_initialization_performance&#34;, &#34;duration&#34;: &#34;6 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestPerformanceWorkflows::test_agent_initialization_performance&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;6 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_framework_isolation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_framework_isolation&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_framework_isolation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nAvailable agents:\n  failing_agent        - No description available\n  nmkrauditor          - \n  simple_navigation    - \n&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_concurrent_agent_execution&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_concurrent_agent_execution&#34;, &#34;duration&#34;: &#34;207 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_concurrent_agent_execution&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;207 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.571147\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 9783d1038ed65abd575dee9edfbce094...\n   IPFS: bafybeig9783d1038ed65abd575dee9edfbce0948aff84716834\n   Size: 3,298 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n------------------------------ Captured log call -------------------------------\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    asyncio:base_events.py:1820 Unclosed client session\nclient_session: &amp;lt;aiohttp.client.ClientSession object at 0x10e043b00&amp;gt;\nERROR    asyncio:base_events.py:1820 Unclosed connector\nconnections: [&amp;#x27;deque([(&amp;lt;aiohttp.client_proto.ResponseHandler object at 0x10db3bb30&amp;gt;, 118160.607701958)])&amp;#x27;]\nconnector: &amp;lt;aiohttp.connector.TCPConnector object at 0x10e043b30&amp;gt;\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    agent_forge.SimpleNavigationAgent:simple_navigation_agent.py:72 Failed to retrieve content from https://example.com. Response: {&amp;#x27;success&amp;#x27;: False, &amp;#x27;error&amp;#x27;: &amp;#x27;HTTP 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}&amp;#x27;, &amp;#x27;page_title&amp;#x27;: None}\n\n&#34;}], &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_import_isolation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_import_isolation&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;e2e/test_framework_workflows.py::TestFrameworkRobustness::test_import_isolation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_initialization&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_initialization&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestSimpleNavigationAgent::test_initialization&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_successful_navigation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_successful_navigation&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestSimpleNavigationAgent::test_successful_navigation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\ud83d\udcc4 Page Title: Example Domain\n&#34;}], &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_navigation_failure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_navigation_failure&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestSimpleNavigationAgent::test_navigation_failure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nERROR    agent_forge.SimpleNavigationAgent:simple_navigation_agent.py:72 Failed to retrieve content from https://example.com. Response: None\n\n&#34;}], &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_url_validation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_url_validation&#34;, &#34;duration&#34;: &#34;215 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestSimpleNavigationAgent::test_url_validation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;215 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nERROR    core.shared.web.browsers.steel_browser_client.SteelBrowserClient:steel_browser_client.py:92 Navigation failed with status 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}\nERROR    agent_forge.SimpleNavigationAgent:simple_navigation_agent.py:72 Failed to retrieve content from https://not-a-url. Response: {&amp;#x27;success&amp;#x27;: False, &amp;#x27;error&amp;#x27;: &amp;#x27;HTTP 404: {&amp;quot;detail&amp;quot;:&amp;quot;Not Found&amp;quot;}&amp;#x27;, &amp;#x27;page_title&amp;#x27;: None}\n\n&#34;}], &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_configuration_handling&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestSimpleNavigationAgent::test_configuration_handling&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestSimpleNavigationAgent::test_configuration_handling&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_initialization&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_initialization&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_initialization&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_proof_of_execution_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_proof_of_execution_workflow&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_proof_of_execution_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Analyze Cardano homepage\n\ud83c\udf10 URL: https://cardano.org\n\u23f0 Timestamp: 2025-06-14T12:08:59.813453\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: e387f3bdd313572a1224627ae9bf41d6...\n   IPFS: bafybeige387f3bdd313572a1224627ae9bf41d68bf1863717ed\n   Size: 3,327 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_audit_log_generation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_audit_log_generation&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_audit_log_generation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Test audit log generation\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.818498\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 86c4063a2795ffb2544a911b6670baaf...\n   IPFS: bafybeig86c4063a2795ffb2544a911b6670baaf5d205d2bfc71\n   Size: 3,281 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_cryptographic_proof_generation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_cryptographic_proof_generation&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_cryptographic_proof_generation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.823622\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 3a2a048b26dc20ec39406239eaeb40bd...\n   IPFS: bafybeig3a2a048b26dc20ec39406239eaeb40bd10354a15651f\n   Size: 3,276 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_ipfs_simulation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_ipfs_simulation&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_ipfs_simulation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.827813\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 6f0e2698d022d31d3e7f9d95c5e88ae2...\n   IPFS: bafybeig6f0e2698d022d31d3e7f9d95c5e88ae2881744ded775\n   Size: 3,304 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_cip25_metadata_generation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_cip25_metadata_generation&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_cip25_metadata_generation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Test CIP-25 metadata\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.831559\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: e32d090f4c57dd01b3773c11ebd7c4a4...\n   IPFS: bafybeige32d090f4c57dd01b3773c11ebd7c4a482a5dbeddeea\n   Size: 3,304 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_nmkr_payload_construction&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_nmkr_payload_construction&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_nmkr_payload_construction&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.835341\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 1f056d47289aa8ddb8511dff6b9562f2...\n   IPFS: bafybeig1f056d47289aa8ddb8511dff6b9562f253a6d13caecc\n   Size: 3,305 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_task_complexity_estimation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_task_complexity_estimation&#34;, &#34;duration&#34;: &#34;7 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_task_complexity_estimation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;7 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Simple analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.838529\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 2fb38b34dfc3450dce55d511f0a5ec1d...\n   IPFS: bafybeig2fb38b34dfc3450dce55d511f0a5ec1d62eeeec0c24f\n   Size: 3,279 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Repository analysis\n\ud83c\udf10 URL: https://github.com/user/repo\n\u23f0 Timestamp: 2025-06-14T12:08:59.840596\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 67b977adc35cdba38715a302bb6ca12f...\n   IPFS: bafybeig67b977adc35cdba38715a302bb6ca12f34881de8d092\n   Size: 3,355 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Complex blockchain analysis\n\ud83c\udf10 URL: https://api.complex-service.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.842278\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: be4da1fa4ef79c311f1ae1dee2c84ef6...\n   IPFS: bafybeigbe4da1fa4ef79c311f1ae1dee2c84ef69636aeb83509\n   Size: 3,328 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_content_analysis_patterns&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_content_analysis_patterns&#34;, &#34;duration&#34;: &#34;6 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_content_analysis_patterns&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;6 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://github.com/user/repo\n\u23f0 Timestamp: 2025-06-14T12:08:59.846789\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: d07bb673ddd0f45f635fa1d13c30846e...\n   IPFS: bafybeigd07bb673ddd0f45f635fa1d13c30846e7255af173e10\n   Size: 3,349 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://news.ycombinator.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.848127\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: f052b96b53910ea5366dd0dfd08b12d3...\n   IPFS: bafybeigf052b96b53910ea5366dd0dfd08b12d33c1fbd4f617f\n   Size: 3,313 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://cardano.org\n\u23f0 Timestamp: 2025-06-14T12:08:59.849490\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 33fa874905edcdd13694b76ba1ec151f...\n   IPFS: bafybeig33fa874905edcdd13694b76ba1ec151fdd3472dd8527\n   Size: 3,316 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_error_handling&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestNMKRAuditorAgent::test_error_handling&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestNMKRAuditorAgent::test_error_handling&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nERROR    agent_forge.NMKRAuditorAgent:nmkr_auditor_agent.py:138 \u274c Blockchain execution failed: Failed to navigate to target URL - browser automation unsuccessful\n\n&#34;}], &#34;integration/test_agents.py::TestAgentInteroperability::test_agent_inheritance_consistency&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestAgentInteroperability::test_agent_inheritance_consistency&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestAgentInteroperability::test_agent_inheritance_consistency&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestAgentInteroperability::test_configuration_compatibility&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestAgentInteroperability::test_configuration_compatibility&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestAgentInteroperability::test_configuration_compatibility&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_agents.py::TestAgentInteroperability::test_async_pattern_consistency&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_agents.py::TestAgentInteroperability::test_async_pattern_consistency&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_agents.py::TestAgentInteroperability::test_async_pattern_consistency&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\ud83d\udcc4 Page Title: Test Page\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.855403\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 31ac71954503e8536e3e67f32661aa5e...\n   IPFS: bafybeig31ac71954503e8536e3e67f32661aa5e6c2d6c7eff36\n   Size: 3,276 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_cli.py::TestAgentDiscovery::test_discover_agents_from_examples&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentDiscovery::test_discover_agents_from_examples&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentDiscovery::test_discover_agents_from_examples&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestAgentDiscovery::test_agent_class_registration&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentDiscovery::test_agent_class_registration&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentDiscovery::test_agent_class_registration&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestAgentDiscovery::test_agent_name_conversion&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentDiscovery::test_agent_name_conversion&#34;, &#34;duration&#34;: &#34;4 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentDiscovery::test_agent_name_conversion&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;4 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestAgentDiscovery::test_list_agents_output&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentDiscovery::test_list_agents_output&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentDiscovery::test_list_agents_output&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIParser::test_parser_creation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIParser::test_parser_creation&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIParser::test_parser_creation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests/integration/test_cli.py:78: in test_parser_creation\n    assert parser.prog == &amp;quot;cli.py&amp;quot;\nE   AssertionError: assert &amp;#x27;__main__.py&amp;#x27; == &amp;#x27;cli.py&amp;#x27;\nE     \nE     - cli.py\nE     + __main__.py\n&#34;}], &#34;integration/test_cli.py::TestCLIParser::test_list_command_parsing&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIParser::test_list_command_parsing&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIParser::test_list_command_parsing&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIParser::test_run_command_parsing&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIParser::test_run_command_parsing&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIParser::test_run_command_parsing&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIParser::test_verbose_flag&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIParser::test_verbose_flag&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIParser::test_verbose_flag&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIParser::test_version_argument&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIParser::test_version_argument&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIParser::test_version_argument&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nAgent Forge 1.0.0\n&#34;}], &#34;integration/test_cli.py::TestAgentExecution::test_run_existing_agent&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentExecution::test_run_existing_agent&#34;, &#34;duration&#34;: &#34;7 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentExecution::test_run_existing_agent&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;7 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: General web analysis\n\ud83c\udf10 URL: https://example.com\n\u23f0 Timestamp: 2025-06-14T12:08:59.896366\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 32268b684a46dac079cc120f9a873068...\n   IPFS: bafybeig32268b684a46dac079cc120f9a87306802147d45d66a\n   Size: 3,276 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_cli.py::TestAgentExecution::test_run_nonexistent_agent&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentExecution::test_run_nonexistent_agent&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentExecution::test_run_nonexistent_agent&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestAgentExecution::test_agent_initialization_failure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentExecution::test_agent_initialization_failure&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentExecution::test_agent_initialization_failure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestAgentExecution::test_agent_with_parameters&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentExecution::test_agent_with_parameters&#34;, &#34;duration&#34;: &#34;5 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentExecution::test_agent_with_parameters&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;5 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;cli.py:107: in run_agent\n    agent = agent_class(**kwargs)\nE   TypeError: NMKRAuditorAgent.__init__() got an unexpected keyword argument &amp;#x27;timeout&amp;#x27;\n\nDuring handling of the above exception, another exception occurred:\ntests/integration/test_cli.py:188: in test_agent_with_parameters\n    result = await forge.run_agent(\ncli.py:109: in run_agent\n    raise ValueError(f&amp;quot;Failed to create agent &amp;#x27;{agent_name}&amp;#x27;: {e}&amp;quot;)\nE   ValueError: Failed to create agent &amp;#x27;nmkrauditor&amp;#x27;: NMKRAuditorAgent.__init__() got an unexpected keyword argument &amp;#x27;timeout&amp;#x27;\n&#34;}], &#34;integration/test_cli.py::TestCLIIntegration::test_logging_setup&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIIntegration::test_logging_setup&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIIntegration::test_logging_setup&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests/integration/test_cli.py:206: in test_logging_setup\n    assert logger.level == cli.logging.INFO\nE   AssertionError: assert 0 == 20\nE    +  where 0 = &amp;lt;Logger test (WARNING)&amp;gt;.level\nE    +  and   20 = &amp;lt;module &amp;#x27;logging&amp;#x27; from &amp;#x27;/opt/anaconda3/lib/python3.12/logging/__init__.py&amp;#x27;&amp;gt;.INFO\nE    +    where &amp;lt;module &amp;#x27;logging&amp;#x27; from &amp;#x27;/opt/anaconda3/lib/python3.12/logging/__init__.py&amp;#x27;&amp;gt; = cli.logging\n&#34;}], &#34;integration/test_cli.py::TestCLIIntegration::test_main_list_command&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIIntegration::test_main_list_command&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIIntegration::test_main_list_command&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIIntegration::test_main_run_command&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIIntegration::test_main_run_command&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIIntegration::test_main_run_command&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIIntegration::test_main_dry_run&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIIntegration::test_main_dry_run&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIIntegration::test_main_dry_run&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIIntegration::test_main_error_handling&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIIntegration::test_main_error_handling&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIIntegration::test_main_error_handling&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests/integration/test_cli.py:275: in test_main_error_handling\n    assert &amp;quot;Error&amp;quot; in captured.out\nE   AssertionError: assert &amp;#x27;Error&amp;#x27; in &amp;#x27;&amp;#x27;\nE    +  where &amp;#x27;&amp;#x27; = CaptureResult(out=&amp;#x27;&amp;#x27;, err=&amp;#x27;&amp;#x27;).out\n\n------------------------------ Captured log call -------------------------------\nERROR    agent_forge.cli:cli.py:209 Agent execution failed: Agent not found\n\n&#34;}], &#34;integration/test_cli.py::TestAgentWorkflow::test_simple_navigation_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentWorkflow::test_simple_navigation_workflow&#34;, &#34;duration&#34;: &#34;6 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentWorkflow::test_simple_navigation_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;6 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\ud83d\udcc4 Page Title: Example Domain\n&#34;}], &#34;integration/test_cli.py::TestAgentWorkflow::test_nmkr_auditor_workflow&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestAgentWorkflow::test_nmkr_auditor_workflow&#34;, &#34;duration&#34;: &#34;6 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestAgentWorkflow::test_nmkr_auditor_workflow&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;6 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\n\n\ud83c\udf89 Agent Forge Blockchain Execution Complete!\n============================================================\n\ud83d\udccb Task: Test blockchain analysis\n\ud83c\udf10 URL: https://cardano.org\n\u23f0 Timestamp: 2025-06-14T12:08:59.953437\n\ud83e\udd16 Agent: agent_forge_NMKRAuditorAgent\n\n\ud83d\udd10 Verification Data:\n   Hash: 0b266ae8383441329ba4aa760f7b8e64...\n   IPFS: bafybeig0b266ae8383441329ba4aa760f7b8e64383a9a3f0c3a\n   Size: 3,358 bytes\n\n\u26d3\ufe0f Blockchain Integration:\n   Network: Cardano\n   Standard: CIP-25\n   Service: NMKR Studio API\n   Cost: 2-4.5 ADA per NFT\n\n\u2705 Status: Verifiable proof generated successfully!\n\ud83d\udcd6 Complete audit log available in proof package\n\ud83d\udd17 Ready for NMKR API minting on Cardano blockchain\n============================================================\n&#34;}], &#34;integration/test_cli.py::TestRealAgentExecution::test_agent_discovery_and_execution&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestRealAgentExecution::test_agent_discovery_and_execution&#34;, &#34;duration&#34;: &#34;6 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestRealAgentExecution::test_agent_discovery_and_execution&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;6 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIConfiguration::test_config_file_parameter&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIConfiguration::test_config_file_parameter&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIConfiguration::test_config_file_parameter&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;integration/test_cli.py::TestCLIConfiguration::test_agent_kwargs_preparation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;integration/test_cli.py::TestCLIConfiguration::test_agent_kwargs_preparation&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;integration/test_cli.py::TestCLIConfiguration::test_agent_kwargs_preparation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_defaults&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_defaults&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_defaults&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_name_and_config&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_name_and_config&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_name_and_config&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_kwargs&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_kwargs&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentInitialization::test_init_with_kwargs&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_success&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_success&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_success&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_failure&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_failure&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLifecycle::test_initialize_failure&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nERROR    agent_forge.test_agent:base.py:65 Failed to initialize functional browser client: Agent setup failed\nERROR    agent_forge.test_agent:base.py:67 Failed to initialize agent test_agent: Agent setup failed\n\n&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_cleanup_success&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_cleanup_success&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLifecycle::test_cleanup_success&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_double_initialize&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_double_initialize&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLifecycle::test_double_initialize&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_context_manager&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLifecycle::test_context_manager&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLifecycle::test_context_manager&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_not_initialized&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_not_initialized&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_not_initialized&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_initialized&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_initialized&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentStatus::test_is_ready_when_initialized&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_not_initialized&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_not_initialized&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_not_initialized&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_initialized&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_initialized&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentStatus::test_get_status_initialized&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentRun::test_run_implementation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentRun::test_run_implementation&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentRun::test_run_implementation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentRun::test_run_with_custom_result&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentRun::test_run_with_custom_result&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentRun::test_run_with_custom_result&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentConfiguration::test_config_access&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentConfiguration::test_config_access&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentConfiguration::test_config_access&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentConfiguration::test_empty_config&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentConfiguration::test_empty_config&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentConfiguration::test_empty_config&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_creation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_creation&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_creation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_usage&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_usage&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentLogging::test_logger_usage&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nWARNING  agent_forge.test_agent:test_base_agent.py:243 Test warning message\n\n&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_creation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_creation&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_creation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_cleanup&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_cleanup&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentBrowserIntegration::test_browser_client_cleanup&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_initialization_error_handling&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_initialization_error_handling&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_initialization_error_handling&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log call -------------------------------\nERROR    agent_forge.test_agent:base.py:65 Failed to initialize functional browser client: Test error\nERROR    agent_forge.test_agent:base.py:67 Failed to initialize agent test_agent: Test error\n\n&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_cleanup_error_handling&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_cleanup_error_handling&#34;, &#34;duration&#34;: &#34;0 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentErrorHandling::test_cleanup_error_handling&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;0 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentIntegration::test_full_lifecycle&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentIntegration::test_full_lifecycle&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentIntegration::test_full_lifecycle&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;unit/test_base_agent.py::TestBaseAgentIntegration::test_context_manager_with_run&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;unit/test_base_agent.py::TestBaseAgentIntegration::test_context_manager_with_run&#34;, &#34;duration&#34;: &#34;1 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;unit/test_base_agent.py::TestBaseAgentIntegration::test_context_manager_with_run&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;1 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;report.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
+
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
+
+    get allData() {
+        return { ...this.data }
+    }
+
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
+
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
+
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
+
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
+
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
+
+    get environment() {
+        return this.renderData.environment
+    }
+
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
+
+module.exports = {
+    manager: new DataManager(),
+}
+
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
+
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
+
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
+
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
+
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
+
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
+
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
+
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
+
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
+
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > td')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > td')?.classList.remove('collapsed')
+        }
+
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
+
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
+
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
+
+        return resultBody
+    },
+}
+
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
+
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
+
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
+
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+</html>

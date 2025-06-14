@@ -1,0 +1,92 @@
+{
+  "event_processing": {},
+  "client_architecture": {},
+  "validation_summary": {
+    "total_checks": 6,
+    "passed_checks": 6,
+    "success_rate": 100.0,
+    "issues": []
+  },
+  "api_endpoints": {
+    "main_api": {
+      "url": "https://chatbot-api-service-v2-oo6mrfxexq-uc.a.run.app",
+      "status_code": 200,
+      "accessible": true,
+      "response_time": 1.068959
+    },
+    "dashboard": {
+      "url": "https://tokennav-dashboard-oo6mrfxexq-uc.a.run.app",
+      "status_code": 200,
+      "accessible": true,
+      "response_time": 0.721543
+    }
+  },
+  "file_structure": {
+    "existing": [
+      "enhanced_orchestrator.py",
+      "agents/enhanced_image_analysis_agent.py",
+      "agents/event_data_extractor_agent.py",
+      "agents/data_compiler_agent.py",
+      "utils/ai/embeddings.py",
+      "utils/ai/query_enhancement.py",
+      "utils/database/client.py",
+      "utils/database/search.py",
+      "chatbot_telegram/bot.py",
+      "chatbot_telegram/message_formatter.py",
+      "chatbot_telegram/progressive_disclosure.py",
+      "chatbot_telegram/error_handler.py",
+      "chatbot_telegram/interactive_handlers.py",
+      "chatbot_api/main.py",
+      "chatbot_api/tools/tools.py"
+    ],
+    "missing": []
+  },
+  "database_claims": {
+    "events": true,
+    "speakers": true,
+    "organizations": true,
+    "user_interactions": true,
+    "validation_report_exists": true
+  },
+  "agent_architecture": {
+    "agents_dir_exists": true,
+    "experimental_dir_exists": true,
+    "framework_free_agents": [
+      "agents/event_data_refiner_agent.py",
+      "agents/advanced_visual_intelligence_agent.py",
+      "agents/models.py",
+      "agents/enhanced_image_analysis_agent.py",
+      "agents/data_compiler_agent.py",
+      "agents/mcp_enhanced_scraper_agent.py",
+      "agents/event_data_extractor_agent.py",
+      "agents/experimental/report_generator_agent.py",
+      "agents/experimental/link_finder_agent.py",
+      "agents/experimental/super_enhanced_scraper_agent.py",
+      "agents/experimental/external_site_scraper_agent.py",
+      "agents/experimental/page_scraper_agent.py",
+      "agents/experimental/link_selector_agent.py"
+    ],
+    "swarms_imports_found": []
+  },
+  "performance_claims": {
+    "api_response_time": 0.996343,
+    "api_accessible": true,
+    "under_2s_claim": true
+  },
+  "monitoring_claims": {
+    "monitoring_files": {
+      "existing": [
+        "services/event_monitor.py",
+        "services/notification_dispatcher.py",
+        "services/start_monitoring.py",
+        "chatbot_api/utils/monitoring.py"
+      ],
+      "missing": []
+    }
+  },
+  "validation_timestamp": "2025-06-03T18:22:15.568069",
+  "validated_documents": [
+    "EVENT_PROCESSING_ARCHITECTURE.md",
+    "CLIENT_ARCHITECTURE.md"
+  ]
+}

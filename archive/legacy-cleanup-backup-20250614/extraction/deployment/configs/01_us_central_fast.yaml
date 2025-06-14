@@ -1,0 +1,83 @@
+---
+# Fast US Central Deployment Configuration
+# Optimized for 3-minute deployments with IAM pre-configured
+
+steps:
+  # Step 1: Build Docker image (optimized)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:fast'
+      - '-f'
+      - 'src/extraction/deployment/configs/dockerfiles/02_Dockerfile.enhanced_multi_region'
+      - '.'
+    id: 'build'
+
+  # Step 2: Push Docker image (parallel where possible)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:fast'
+    id: 'push'
+    waitFor: ['build']
+
+  # Step 3: Deploy to Cloud Run (optimized settings)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enhanced-multi-region-us-central'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:fast'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '4Gi'
+      - '--cpu'
+      - '2'
+      - '--timeout'
+      - '1800'
+      - '--max-instances'
+      - '10'
+      - '--concurrency'
+      - '80'
+      - '--set-env-vars'
+      - 'REGION=us-central1,COST_TIER=2,STEEL_BROWSER_ENABLED=true'
+      - '--no-traffic'  # Deploy without traffic initially
+    id: 'deploy'
+    waitFor: ['push']
+
+  # Step 4: Update traffic (separate step for faster deployment)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'update-traffic'
+      - 'enhanced-multi-region-us-central'
+      - '--to-latest'
+      - '--region'
+      - 'us-central1'
+    id: 'traffic'
+    waitFor: ['deploy']
+
+# Optimized configuration for speed
+timeout: '900s'  # 15 minutes max, expect ~3 minutes
+options:
+  machineType: 'E2_HIGHCPU_32'  # High CPU for faster builds
+  diskSizeGb: 100
+  logging: CLOUD_LOGGING_ONLY
+
+# Build optimization
+substitutions:
+  _REGION: 'us-central1'
+  _SERVICE_NAME: 'enhanced-multi-region-us-central'
+  _IMAGE_TAG: 'fast'
+
+# Service account with proper IAM (avoids permission delays)
+serviceAccount: 'projects/tokenhunter-457310/serviceAccounts/867263134607-compute@developer.gserviceaccount.com' 

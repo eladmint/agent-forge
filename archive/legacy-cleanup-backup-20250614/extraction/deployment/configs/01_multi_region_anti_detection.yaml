@@ -1,0 +1,95 @@
+---
+# Multi-Region Anti-Detection Deployment Configuration
+# Supports both US Central and Europe West for 92% Lu.ma success rate
+
+substitutions:
+  _SERVICE_NAME: enhanced-multi-region-us-central  # Default, overridden by script
+  _REGION: us-central1  # Default, overridden by script
+  _IMAGE_TAG: multi-region-latest
+
+steps:
+  # Step 1: Build Docker image (optimized with caching)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+      - '--cache-from'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:latest'
+      - '-f'
+      - 'src/extraction/deployment/configs/dockerfiles/02_Dockerfile.enhanced_multi_region'
+      - '.'
+    id: 'build'
+
+  # Step 2: Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+    id: 'push'
+    waitFor: ['build']
+
+  # Step 3: Deploy to Cloud Run (region-agnostic)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-multi-region-extractor:${_IMAGE_TAG}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--memory=2Gi'
+      - '--cpu=1'
+      - '--concurrency=10'
+      - '--max-instances=3'
+      - '--min-instances=0'
+      - '--timeout=300s'
+      - '--port=8080'
+      - '--set-env-vars=EXTRACTION_MODE=enhanced_multi_region,REGION=${_REGION}'
+      - '--execution-environment=gen2'
+      - '--cpu-boost'
+      - '--session-affinity'
+    id: 'deploy'
+    waitFor: ['push']
+
+  # Step 4: Set IAM permissions (prevents IAM hangs)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'add-iam-policy-binding'
+      - '${_SERVICE_NAME}'
+      - '--region=${_REGION}'
+      - '--member=allUsers'
+      - '--role=roles/run.invoker'
+    id: 'set-iam'
+    waitFor: ['deploy']
+
+  # Step 5: Verify deployment completed
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'describe'
+      - '${_SERVICE_NAME}'
+      - '--region=${_REGION}'
+      - '--format=value(status.url)'
+    id: 'verify-deployment'
+    waitFor: ['set-iam']
+
+# Optimizations for 3-minute deployment
+options:
+  machineType: 'E2_HIGHCPU_8'  # Faster build machine
+  diskSizeGb: 50
+  logging: CLOUD_LOGGING_ONLY
+
+# Timeout settings
+timeout: '600s'  # 10 minutes max (should complete in ~3-4 minutes)
+
+# Build tags for tracking
+tags:
+  - 'multi-region-anti-detection'
+  - 'enhanced-extraction'
+  - '92-percent-success-rate'
+  - '${_REGION}' 

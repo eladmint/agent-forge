@@ -1,0 +1,83 @@
+# Phase 1: Steel Browser + MCP Integration Dockerfile
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies required for Steel Browser and MCP tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    gnupg \
+    ca-certificates \
+    apt-transport-https \
+    software-properties-common \
+    build-essential \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables for Phase 1
+ENV PYTHONPATH=/app
+ENV PHASE=1
+ENV STEEL_BROWSER_ENABLED=true
+ENV MCP_BROWSER_ENABLED=true
+ENV PORT=8000
+
+# Copy centralized requirements file (enterprise architecture)
+COPY requirements.txt /app/requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Install additional Phase 1 dependencies
+RUN pip install --no-cache-dir \
+    playwright \
+    selenium \
+    undetected-chromedriver \
+    stealth \
+    fake-useragent \
+    httpx[http2] \
+    aiofiles \
+    asyncio-throttle
+
+# Install Playwright browsers
+RUN playwright install chromium
+
+# Copy project structure
+COPY . /app/
+
+# Copy MCP tools and build if needed
+COPY mcp_tools/ /app/mcp_tools/
+WORKDIR /app/mcp_tools
+RUN npm install --production 2>/dev/null || echo "MCP tools npm install skipped"
+RUN npm run build 2>/dev/null || echo "MCP tools build skipped"
+
+# Switch back to app directory
+WORKDIR /app
+
+# Copy Steel Browser components
+COPY extraction/agents/experimental/ /app/extraction/agents/experimental/
+
+# Ensure Steel Browser scripts are executable
+RUN chmod +x /app/extraction/agents/experimental/super_enhanced_scraper_agent.py
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Health check for Phase 1 services
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:$PORT/health_enhanced || exit 1
+
+# Expose the port
+EXPOSE $PORT
+
+# Set the entrypoint for Phase 1 Enhanced Orchestrator
+CMD ["python", "scripts/orchestrator/main_extractor_service.py"]
+
+# Labels for Phase 1 identification
+LABEL version="2.0.0-phase1"
+LABEL description="TokenHunter Phase 1: Steel Browser + MCP Integration"
+LABEL capabilities="steel-browser,mcp-tools,captcha-solving,anti-bot-evasion"
+LABEL target_metrics="complex_site_95_percent,captcha_100_percent,anti_bot_90_percent" 

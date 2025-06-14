@@ -1,0 +1,62 @@
+steps:
+  # Build the main extraction service
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'deployment/docker/Dockerfile.main-extraction'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/main-extraction-service:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/main-extraction-service:$BUILD_ID'
+      - '.'
+
+  # Push the image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/main-extraction-service:latest'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/main-extraction-service:$BUILD_ID'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'main-extraction-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/main-extraction-service:latest'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '4Gi'
+      - '--cpu'
+      - '2'
+      - '--timeout'
+      - '900'
+      - '--max-instances'
+      - '5'
+      - '--set-env-vars'
+      - 'SUPABASE_URL=https://ckgzzjrgwytqxjqxqnii.supabase.co'
+      - '--set-env-vars'
+      - 'SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrZ3p6anJnd3l0cXhqcXhxbmlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM4MTM0OTEsImV4cCI6MjAyOTM4OTQ5MX0.QjlNfQH_7hXS7KXYpYXZKSdWWswgVElhE_3FQCDJo2E'
+      - '--port'
+      - '8080'
+
+images:
+  - 'gcr.io/$PROJECT_ID/main-extraction-service:latest'
+  - 'gcr.io/$PROJECT_ID/main-extraction-service:$BUILD_ID'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '1200s'

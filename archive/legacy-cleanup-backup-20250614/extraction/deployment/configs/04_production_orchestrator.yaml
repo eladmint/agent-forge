@@ -1,0 +1,45 @@
+# Google Cloud Build configuration for Enhanced Production Orchestrator v2 with Data Quality Optimization
+# Phase 3B: Data Quality Optimization & Enhanced Monitoring Complete (June 12, 2025)
+# Status: 25% Multi-Agent Pipeline with 506% improvement (86 vs 17 events)
+steps:
+  # Build the Docker image with quality optimization
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-orchestrator-v2:latest',
+      '-f', 'src/extraction/deployment/configs/dockerfiles/06_Dockerfile.production_orchestrator',
+      '.'
+    ]
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-orchestrator-v2:latest']
+
+  # Deploy Enhanced Production Orchestrator v2 with Quality Optimization
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'enhanced-orchestrator-v2',
+      '--image=us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-orchestrator-v2:latest',
+      '--region=us-central1',
+      '--platform=managed',
+      '--allow-unauthenticated',
+      '--port=8080',
+      '--memory=8Gi',
+      '--cpu=4',
+      '--min-instances=1',
+      '--max-instances=5',
+      '--concurrency=10',
+      '--timeout=3600',
+      '--set-secrets=SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_KEY=SUPABASE_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest,VERTEX_PROJECT_ID=VERTEX_PROJECT_ID:latest',
+      '--set-env-vars=PYTHONPATH=/app,GCP_PROJECT_ID=tokenhunter-457310,STEEL_BROWSER_ENABLED=true,MULTI_AGENT_PIPELINE_ENABLED=true,QUALITY_OPTIMIZATION_ENABLED=true,AB_TESTING_TRAFFIC_PERCENTAGE=25,QUALITY_MONITORING_INTERVAL=300'
+    ]
+
+# Store build artifacts for Enhanced Orchestrator v2
+images:
+  - 'us-central1-docker.pkg.dev/tokenhunter-457310/token-nav-repo/enhanced-orchestrator-v2:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s  # 60 minutes for enhanced processing
