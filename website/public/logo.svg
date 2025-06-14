@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="forgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7C3AED;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CD7F32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Anvil Base -->
+  <rect x="20" y="80" width="80" height="20" rx="4" fill="url(#forgeGrad)" />
+  
+  <!-- Anvil Body -->
+  <path d="M30 50 L90 50 L85 80 L35 80 Z" fill="url(#forgeGrad)" />
+  
+  <!-- Anvil Horn -->
+  <path d="M85 50 L110 45 L110 65 L85 70 Z" fill="url(#forgeGrad)" />
+  
+  <!-- Forge Fire -->
+  <g opacity="0.8">
+    <path d="M45 25 Q50 15 55 25 Q60 15 65 25 Q60 35 55 30 Q50 35 45 25" fill="#FF6B35" />
+    <circle cx="55" cy="30" r="3" fill="#F59E0B" />
+  </g>
+  
+  <!-- Hammer (crossed behind) -->
+  <g opacity="0.7">
+    <rect x="35" y="15" width="4" height="40" rx="2" fill="#36454F" transform="rotate(15 37 35)" />
+    <rect x="32" y="12" width="10" height="8" rx="2" fill="#36454F" transform="rotate(15 37 16)" />
+  </g>
+  
+  <!-- AI Neural Pattern -->
+  <g opacity="0.3" stroke="#7C3AED" stroke-width="1" fill="none">
+    <circle cx="25" cy="25" r="2" />
+    <circle cx="95" cy="25" r="2" />
+    <circle cx="60" cy="15" r="2" />
+    <line x1="25" y1="25" x2="60" y2="15" />
+    <line x1="95" y1="25" x2="60" y2="15" />
+  </g>
+</svg>
