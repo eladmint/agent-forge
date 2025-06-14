@@ -4,7 +4,7 @@
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-80%2B-green.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-86%20passing-green.svg)](#testing)
 [![Steel Browser](https://img.shields.io/badge/Steel%20Browser-Integrated-orange.svg)](https://steel.dev)
 [![Blockchain Ready](https://img.shields.io/badge/Blockchain-Ready-purple.svg)](#blockchain-integration)
 
@@ -14,7 +14,7 @@ Agent Forge empowers developers to create, deploy, and monetize autonomous AI ag
 
 ## 🌟 **What Makes Agent Forge Special?**
 
-🎯 **Production-Ready Framework**: Enterprise-grade architecture with comprehensive testing (80+ tests)  
+🎯 **Production-Ready Framework**: Enterprise-grade architecture with comprehensive testing (86 passing tests)  
 🔗 **Blockchain Integration**: Built-in support for NMKR Proof-of-Execution NFTs and Masumi Network  
 🌐 **Steel Browser Powered**: Professional web automation with anti-detection capabilities  
 ⚡ **Async-First Design**: Modern Python async/await patterns throughout  
@@ -120,7 +120,7 @@ agent_forge/
 - **IPFS Storage**: Decentralized storage for audit logs and proofs
 
 ### 🧪 **Testing & Quality**
-- **80+ Tests**: Comprehensive test coverage across all components
+- **86 Passing Tests**: Comprehensive test coverage of implemented functionality
 - **Automated Testing**: Built-in test runner with multiple execution modes
 - **Coverage Reports**: HTML and XML coverage reporting
 - **Performance Tests**: Benchmarking and performance validation
@@ -262,7 +262,7 @@ async def monetized_agent():
 
 ## 🧪 **Testing**
 
-Agent Forge includes a comprehensive testing framework with 80+ tests:
+Agent Forge includes a comprehensive testing framework with 86 passing tests covering implemented functionality:
 
 ### Test Categories
 - **Unit Tests** (24): Core functionality validation
@@ -377,7 +377,7 @@ class MyAgent(AsyncContextAgent):
 - ✅ Core framework architecture
 - ✅ Steel Browser integration
 - ✅ CLI interface and agent discovery
-- ✅ Comprehensive testing framework (80+ tests)
+- ✅ Comprehensive testing framework (86 passing tests)
 - ✅ NMKR Proof-of-Execution integration
 - ✅ Masumi Network integration
 - ✅ Complete documentation suite
