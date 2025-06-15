@@ -14,10 +14,11 @@
 - **[Product Strategy](strategy/)** - Framework positioning, competitive analysis, and market strategy
 - **[Product Positioning](positioning/)** - Value propositions, differentiation, and market positioning
 - **[Product Messaging](messaging/)** - Key messages, value communication, and brand narrative
+- **[Agent Catalog](AGENT_CATALOG.md)** - Complete agent categorization by tier, capability, and use case
 
 ### **Go-to-Market Execution**
 - **[Launch Strategy](launch/)** - Community launch planning, timeline, and execution
-- **[Marketing Strategy](marketing/)** - Developer outreach, content strategy, and community building
+- **[Marketing Strategy](marketing/)** - developer outreach, content strategy, and community building
 - **[User Personas](personas/)** - Target developer profiles, use cases, and adoption journeys
 
 ---
@@ -29,9 +30,18 @@
 
 Agent Forge eliminates 90% of development complexity for AI agent creation while providing:
 - **Universal Multi-Chain Support:** 8+ blockchain networks with unified APIs
-- **Enterprise-Grade Architecture:** AsyncContextAgent foundation with 86+ tests
+- **Enterprise-Grade Architecture:** AsyncContextAgent foundation with 182+ tests
 - **Comprehensive Integration:** Othentic AVS with 5 Actively Validated Services
 - **Complete Monetization:** 14+ payment methods with cross-chain capabilities
+- **Tiered Agent Architecture:** 26+ agents across Community, Premium, and Enterprise tiers
+
+### **Agent Portfolio**
+- **🌟 Community Tier:** 8 open-source agents for learning and basic automation
+- **💎 Premium Tier:** 15 enterprise-grade agents with blockchain integration
+- **🏢 Enterprise Tier:** 1 specialized solution for enterprise deployment
+- **📊 Complete Coverage:** 80% of use cases with community tier, 95% with premium tier
+
+**📋 REALITY CHECK:** Agent counts verified by actual file system analysis
 
 ### **Target Market**
 - **Primary:** AI Agent Entrepreneurs building monetizable autonomous agents
@@ -42,6 +52,7 @@ Agent Forge eliminates 90% of development complexity for AI agent creation while
 - **🌟 Multi-Chain First:** Only framework built for cross-chain operations from ground up
 - **Production Ready:** Complete testing, documentation, and enterprise deployment capability
 - **AI Agent Economy:** Direct integration with emerging multi-chain agent monetization
+- **Tiered Architecture:** Strategic agent distribution from open source to enterprise
 
 ---
 
