@@ -33,6 +33,15 @@ Progressive skill building with 4 complexity levels:
 - **Level 3:** Advanced GitHub Analyzer Agent (45 minutes)
 - **Level 4:** Blockchain NMKR Auditor Agent ✅ COMPLETE (15 minutes)
 
+### **🏛️ [Cardano Integration Tutorial](CARDANO_INTEGRATION_TUTORIAL.md)** ✅ NEW
+Complete hands-on tutorial for building AI agent economies on Cardano blockchain:
+- **Module 1:** Basic Setup & Client Initialization (15 minutes)
+- **Module 2:** Agent Registration with Staking (20 minutes)
+- **Module 3:** Service Marketplace Operations (25 minutes)
+- **Module 4:** Revenue Sharing & Token Economics (20 minutes)
+- **Module 5:** Cross-Chain Operations (25 minutes)
+- **Module 6:** Enterprise Compliance & Final Integration (30 minutes)
+
 ## 🎯 **Learning Paths**
 
 ### **Business Analyst Path**
@@ -40,6 +49,12 @@ Progressive skill building with 4 complexity levels:
 2. **[Executive Dashboard Creation](EXECUTIVE_DASHBOARDS.md)** - Business intelligence visualization
 3. **[ROI Measurement & Optimization](ROI_OPTIMIZATION.md)** - Value measurement and improvement
 4. **Industry-specific tutorial** based on sector
+
+### **Blockchain Developer Path** ✅ NEW
+1. **[Cardano Integration Tutorial](CARDANO_INTEGRATION_TUTORIAL.md)** - Complete AI agent economy development
+2. **[Foundation Agent Development Tutorial](AGENT_DEVELOPMENT_TUTORIAL.md)** - Level 4: NMKR Auditor Agent
+3. **[Enterprise Systems Integration](ENTERPRISE_INTEGRATION.md)** - Blockchain system connectivity
+4. **[Custom Agent Development](CUSTOM_AGENT_DEVELOPMENT.md)** - Advanced blockchain agent patterns
 
 ### **Technical Integration Path**
 1. **[Configuration Basics](CONFIGURATION_BASICS.md)** - Technical setup

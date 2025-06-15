@@ -12,6 +12,7 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 
 ### **🔗 Integration Guides**
 - **[🎉 MCP Integration Guide](integrations/MCP_INTEGRATION_GUIDE.md)** - **✅ COMPLETE** Claude Desktop and MCP client integration
+- **[🏛️ Enhanced Cardano Integration](CARDANO_IMPLEMENTATION_COMPLETE.md)** - **✅ COMPLETE** Complete AI agent economy with smart contracts
 - **[integrations/NMKR Proof-of-Execution Guide](integrations/NMKR_PROOF_OF_EXECUTION_GUIDE.md)** - **✅ COMPLETE** Cardano NFT integration for verifiable agents  
 - **[integrations/Steel Browser Integration](integrations/STEEL_BROWSER_INTEGRATION.md)** - Web automation setup and usage
 
@@ -23,6 +24,7 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 
 ### **🛠️ API References**
 - **[🎉 MCP Tools Reference](api/MCP_TOOLS_REFERENCE.md)** - Complete reference for all Agent Forge tools in Claude Desktop
+- **[🏛️ Enhanced Cardano Client API](api/ENHANCED_CARDANO_CLIENT_API.md)** - **✅ NEW** Complete blockchain integration API documentation
 - **[api/BaseAgent API Reference](api/BASEAGENT_API_REFERENCE.md)** - Complete BaseAgent class documentation
 - **[api/CLI Reference](api/CLI_REFERENCE.md)** - Complete command-line interface guide
 
@@ -50,6 +52,8 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 |------------------|---------------|
 | **🎉 Use agents in Claude Desktop** | **[Claude Desktop Setup](CLAUDE_DESKTOP_SETUP.md)** |
 | **🎉 See all available MCP tools** | **[MCP Tools Reference](api/MCP_TOOLS_REFERENCE.md)** |
+| **🏛️ Build AI agent economy on Cardano** | **[Cardano Integration Tutorial](tutorials/CARDANO_INTEGRATION_TUTORIAL.md)** |
+| **🏛️ Use Enhanced Cardano Client** | **[Enhanced Cardano Client API](api/ENHANCED_CARDANO_CLIENT_API.md)** |
 | **🏢 Monitor competitors and brands** | **[Visual Intelligence Guide](enterprise/VISUAL_INTELLIGENCE_GUIDE.md)** |
 | **🏢 Automate due diligence research** | **[Research Compiler Guide](enterprise/RESEARCH_COMPILER_GUIDE.md)** |
 | **💰 Calculate enterprise ROI** | **[ROI Calculator](business/ROI_CALCULATOR.md)** |
@@ -70,6 +74,7 @@ Welcome to the Agent Forge framework documentation. Agent Forge is the world's f
 - ✅ **CLI Interface** - Command-line agent management
 - ✅ **Steel Browser Integration** - Production-ready web automation
 - ✅ **Framework Cleanup** - Professional standalone structure
+- ✅ **Enhanced Cardano Integration** - **COMPLETE** Complete AI agent economy with 5 smart contract patterns
 - ✅ **NMKR Integration** - **COMPLETE** Cardano NFT minting for Proof-of-Execution
 - ✅ **Enterprise Intelligence** - **NEW** Visual Intelligence and Research Compiler agents
 - ✅ **MCP Integration** - **COMPLETE** 11+ agents available in Claude Desktop

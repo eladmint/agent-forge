@@ -1,0 +1,202 @@
+{
+  "demo_title": "Enhanced Cardano Agent - AI Agent Economy Demo",
+  "demo_version": "1.0.0",
+  "demo_description": "Complete demonstration of blockchain-based AI agent economy with 5 smart contract patterns",
+  
+  "agent_config": {
+    "nmkr_api_key": "demo_nmkr_key_replace_with_actual",
+    "nmkr_project_uid": "demo_project_12345_replace_with_actual",
+    "network": "mainnet",
+    "enable_cross_chain": true,
+    "compliance_mode": "enterprise",
+    "demo_mode": true
+  },
+  
+  "demo_scenarios": {
+    "register_agent": {
+      "name": "Agent Registration Demo",
+      "description": "Demonstrates multi-tier staking and reputation system",
+      "parameters": {
+        "agent_name": "DemoAIAgent",
+        "capabilities": ["web_analysis", "data_extraction", "report_generation"],
+        "stake_tier": "professional",
+        "stake_amount": 500,
+        "expected_reputation": 0.85
+      },
+      "expected_outcomes": [
+        "Agent successfully registered in hierarchical registry",
+        "Stake amount locked in reputation contract",
+        "Agent capabilities verified and indexed",
+        "Discovery metadata published to registry"
+      ]
+    },
+    
+    "service_marketplace": {
+      "name": "Service Marketplace Demo", 
+      "description": "Demonstrates escrow-as-a-service with ZK verification",
+      "parameters": {
+        "service_type": "competitive_analysis",
+        "client_budget": 250,
+        "escrow_duration": "7_days",
+        "completion_requirements": ["analysis_report", "executive_summary", "recommendations"]
+      },
+      "expected_outcomes": [
+        "Escrow contract created with client funds",
+        "Service execution tracked with proofs",
+        "ZK verification of completion criteria",
+        "Automated payment release to agent"
+      ]
+    },
+    
+    "revenue_sharing": {
+      "name": "Revenue Sharing Demo",
+      "description": "Demonstrates token economics and profit distribution",
+      "parameters": {
+        "total_revenue": 10000,
+        "distribution_period": "quarterly",
+        "participant_count": 250,
+        "distribution_model": {
+          "creators": 70,
+          "stakers": 20, 
+          "treasury": 10
+        }
+      },
+      "expected_outcomes": [
+        "Revenue distributed to 250+ participants",
+        "Token rewards calculated based on contribution",
+        "Governance token voting rights allocated",
+        "Treasury funds allocated for ecosystem growth"
+      ]
+    },
+    
+    "cross_chain": {
+      "name": "Cross-Chain Demo",
+      "description": "Demonstrates multi-blockchain service discovery",
+      "parameters": {
+        "target_chains": ["ethereum", "polygon", "binance_smart_chain", "avalanche", "solana"],
+        "bridge_protocols": ["wormhole", "axelar", "layerzero"],
+        "service_types": ["defi_analysis", "nft_tracking", "dao_governance"]
+      },
+      "expected_outcomes": [
+        "Service discovery across 5+ blockchains",
+        "Bridge protocols activated for cross-chain escrow",
+        "Universal agent registry access established",
+        "Multi-chain service coordination operational"
+      ]
+    },
+    
+    "compliance": {
+      "name": "Enterprise Compliance Demo",
+      "description": "Demonstrates GDPR, KYC/AML, and regulatory frameworks",
+      "parameters": {
+        "compliance_frameworks": ["GDPR", "KYC", "AML", "SOX", "CCPA"],
+        "jurisdictions": ["EU", "US", "UK", "APAC"],
+        "audit_requirements": ["data_processing", "user_consent", "transaction_monitoring"]
+      },
+      "expected_outcomes": [
+        "GDPR compliance verification for data processing",
+        "KYC/AML workflows integrated with identity providers",
+        "Multi-jurisdiction regulatory compliance validated",
+        "Comprehensive audit trails generated"
+      ]
+    }
+  },
+  
+  "performance_benchmarks": {
+    "agent_registration": {
+      "target_time": "< 3 seconds",
+      "success_rate": "> 99%",
+      "concurrent_registrations": "> 200"
+    },
+    "escrow_operations": {
+      "creation_time": "< 2 seconds", 
+      "verification_time": "< 5 seconds",
+      "throughput": "> 10 operations/second"
+    },
+    "revenue_distribution": {
+      "processing_time": "< 30 seconds",
+      "participant_limit": "> 1000",
+      "accuracy": "100%"
+    },
+    "cross_chain_discovery": {
+      "discovery_time": "< 10 seconds",
+      "supported_chains": "> 5",
+      "bridge_activation": "< 15 seconds"
+    },
+    "compliance_validation": {
+      "verification_time": "< 5 seconds",
+      "framework_coverage": "100%",
+      "audit_completeness": "> 95%"
+    }
+  },
+  
+  "demo_instructions": {
+    "prerequisites": [
+      "Python 3.8+ installed",
+      "Agent Forge framework setup completed", 
+      "Demo dependencies installed",
+      "Network connectivity for blockchain operations"
+    ],
+    "setup_steps": [
+      "cd agent_forge",
+      "python -m pip install -r requirements.txt",
+      "Configure NMKR API credentials (optional for demo mode)",
+      "Verify Enhanced Cardano Agent availability"
+    ],
+    "run_commands": {
+      "full_demo": "python tools/demos/cardano_enhanced_demo.py --operation full_demo",
+      "agent_registration": "python tools/demos/cardano_enhanced_demo.py --operation register_agent",
+      "service_marketplace": "python tools/demos/cardano_enhanced_demo.py --operation service_marketplace", 
+      "revenue_sharing": "python tools/demos/cardano_enhanced_demo.py --operation revenue_sharing",
+      "cross_chain": "python tools/demos/cardano_enhanced_demo.py --operation cross_chain",
+      "compliance": "python tools/demos/cardano_enhanced_demo.py --operation compliance"
+    }
+  },
+  
+  "educational_content": {
+    "smart_contract_patterns": {
+      "hierarchical_agent_registry": {
+        "description": "Multi-tier reputation system with staking mechanisms",
+        "use_cases": ["Agent discovery", "Quality assurance", "Economic incentives"],
+        "technical_benefits": ["Sybil resistance", "Quality filtering", "Economic alignment"]
+      },
+      "dual_token_economic_model": {
+        "description": "Governance and utility tokens for ecosystem participation",
+        "use_cases": ["Revenue sharing", "Governance voting", "Service payments"],
+        "technical_benefits": ["Economic sustainability", "Democratic governance", "Value alignment"]
+      },
+      "escrow_as_a_service": {
+        "description": "Automated payment processing with cryptographic verification",
+        "use_cases": ["Service payments", "Dispute resolution", "Quality guarantees"],
+        "technical_benefits": ["Trust minimization", "Automated execution", "Fraud prevention"]
+      },
+      "cross_chain_service_discovery": {
+        "description": "Multi-blockchain coordination and interoperability protocols",
+        "use_cases": ["Universal agent access", "Cross-chain payments", "Multi-chain services"],
+        "technical_benefits": ["Ecosystem expansion", "Liquidity aggregation", "Platform independence"]
+      },
+      "compliance_ready_abac": {
+        "description": "Attribute-based access control for regulatory compliance",
+        "use_cases": ["Enterprise deployment", "Regulatory compliance", "Data protection"],
+        "technical_benefits": ["Legal compliance", "Risk mitigation", "Enterprise adoption"]
+      }
+    }
+  },
+  
+  "troubleshooting": {
+    "common_issues": {
+      "module_not_found": {
+        "error": "ModuleNotFoundError: No module named 'examples.cardano_enhanced_agent'",
+        "solution": "Ensure you're running from the agent_forge root directory and src/ is in Python path"
+      },
+      "nmkr_api_error": {
+        "error": "NMKR API authentication failed", 
+        "solution": "Demo mode works without real credentials. For production, configure valid NMKR API key"
+      },
+      "performance_issues": {
+        "error": "Demo operations taking longer than expected",
+        "solution": "Check network connectivity. Demo includes simulated delays for realistic experience"
+      }
+    }
+  }
+}

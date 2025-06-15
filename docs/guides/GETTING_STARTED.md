@@ -150,12 +150,35 @@ python cli.py run my_agent --config my_config.json
 - **[Steel Browser Guide](../integrations/STEEL_BROWSER_INTEGRATION.md)** - Advanced web automation
 - **[Best Practices](../BEST_PRACTICES.md)** - Professional development patterns
 
+### **🏛️ Advanced Example: Enhanced Cardano Agent** ✅ NEW
+Experience the complete AI agent economy with blockchain integration:
+
+```bash
+# Run the Enhanced Cardano Agent for full AI economy demo
+python cli.py run cardano_enhanced --operation full_demo
+
+# Test individual smart contract operations
+python cli.py run cardano_enhanced --operation register_agent
+python cli.py run cardano_enhanced --operation service_marketplace
+python cli.py run cardano_enhanced --operation revenue_sharing
+```
+
+**What it demonstrates:**
+- **Agent Registration** with reputation staking
+- **Service Marketplace** with escrow and execution proofs  
+- **Revenue Sharing** with token-based economics
+- **Cross-Chain Operations** for multi-blockchain support
+- **Enterprise Compliance** with GDPR and KYC/AML frameworks
+
+**Perfect for:** Blockchain developers, AI agent economy builders, enterprise applications
+
 ### **Build Something Awesome**
 Ideas for your next agent:
+- **🏛️ AI Agent Economy** - Build on the Enhanced Cardano Agent for blockchain-based AI services
 - **Content Monitor** - Track changes on websites
 - **Data Collector** - Gather information from multiple sources
 - **Report Generator** - Compile and analyze web data
-- **Blockchain Auditor** - Create verifiable execution proofs
+- **Blockchain Auditor** - Create verifiable execution proofs with NMKR integration
 
 ## ❓ **Having Issues?**
 

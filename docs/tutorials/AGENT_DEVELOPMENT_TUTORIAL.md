@@ -590,9 +590,38 @@ python cli.py --verbose run github_analyzer --repo_url https://github.com/python
 
 ## 🔐 **Level 4: Blockchain Proof-of-Execution Agent** ✅ COMPLETE
 
-**Great news!** The most advanced blockchain integration agent is already fully implemented in Agent Forge!
+**Great news!** The most advanced blockchain integration agents are already fully implemented in Agent Forge!
 
-> **✅ Ready to Use:** The complete [NMKRAuditorAgent](../../examples/nmkr_auditor_agent.py) (642 lines) is production-ready with full NMKR, IPFS, and CIP-25 integration.
+> **✅ Ready to Use:** Both the [NMKRAuditorAgent](../../examples/nmkr_auditor_agent.py) (642 lines) and [CardanoEnhancedAgent](../../examples/cardano_enhanced_agent.py) are production-ready with complete blockchain integration.
+
+### **🏛️ Enhanced Cardano Agent - Complete AI Agent Economy** ✅ NEW
+
+The CardanoEnhancedAgent provides the most comprehensive blockchain integration, implementing a complete AI agent economy with 5 smart contract patterns:
+
+**🚀 Quick Start: Full AI Agent Economy Demo**
+```bash
+# Experience the complete AI agent economy
+python cli.py run cardano_enhanced --operation full_demo
+
+# Test individual smart contract operations
+python cli.py run cardano_enhanced --operation register_agent      # Agent staking & reputation
+python cli.py run cardano_enhanced --operation service_marketplace # Escrow & payments  
+python cli.py run cardano_enhanced --operation revenue_sharing     # Token economics
+python cli.py run cardano_enhanced --operation cross_chain        # Multi-blockchain support
+```
+
+**🏗️ Smart Contract Architecture Implemented:**
+- **✅ Hierarchical Agent Registry** - Multi-tier staking with reputation systems
+- **✅ Dual-Token Economic Model** - Governance, utility, and participation tokens
+- **✅ Escrow-as-a-Service** - Automated payment processing with ZK verification
+- **✅ Cross-Chain Service Discovery** - Multi-blockchain coordination protocols
+- **✅ Compliance-Ready ABAC** - Enterprise regulatory frameworks (GDPR, KYC/AML)
+
+**💰 Economic Model Features:**
+- **Agent Registration** with reputation-based staking (10-1000 ADA tiers)
+- **Service Marketplace** with automated escrow and execution proofs
+- **Revenue Sharing** with community profit distribution (70% creators, 20% stakers, 10% treasury)
+- **Cross-Chain Operations** supporting 5+ blockchains with bridge protocols
 
 ### **🚀 Quick Start: Use the Implemented Agent**
 

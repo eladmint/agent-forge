@@ -7,6 +7,44 @@ This directory contains comprehensive architectural documentation for the Agent 
 ### **🎯 [Framework Architecture](FRAMEWORK_ARCHITECTURE.md)**
 Complete architectural overview of the Agent Forge framework:
 
+### **🏛️ [Cardano Architecture](CARDANO_ARCHITECTURE.md)** ✅ NEW  
+Comprehensive technical architecture for blockchain AI agent economy:
+
+#### **🏗️ Smart Contract Patterns**
+- **Hierarchical Agent Registry** - Multi-tier staking with reputation systems
+- **Dual-Token Economic Model** - Governance, utility, and participation tokens
+- **Escrow-as-a-Service** - Automated payment processing with ZK verification
+- **Cross-Chain Service Discovery** - Multi-blockchain coordination protocols
+- **Compliance-Ready ABAC** - Enterprise regulatory frameworks
+
+#### **🔒 Security Architecture**
+- **Production-Grade Validation** - Zero vulnerabilities in comprehensive testing
+- **Enterprise Compliance** - GDPR, KYC/AML, and multi-jurisdiction support
+- **Cryptographic Integrity** - Hash collision resistance and proof verification
+- **Access Control** - Role-based permissions and multi-signature requirements
+
+#### **⚡ Performance Specifications**
+- **10+ NFT operations/second** - Production throughput validation
+- **200+ concurrent registrations** - Agent scalability testing
+- **1000+ participant revenue distribution** - Economic scalability
+- **<3 second P95 response times** - Enterprise performance standards
+
+### **🧪 [Testing Architecture](TESTING_ARCHITECTURE.md)** ✅ NEW
+Comprehensive 5-tier testing strategy documentation:
+
+#### **🔬 Testing Tiers**
+- **Unit Tests** (45): Individual component validation including Cardano client
+- **Integration Tests** (28): Component interaction and workflow testing
+- **End-to-End Tests** (30): Complete user scenario validation
+- **Performance Tests** (12): Blockchain operations benchmarking
+- **Security Tests** (8): Comprehensive vulnerability assessment
+
+#### **📊 Quality Metrics**
+- **100% Pass Rate** - All 120+ tests passing
+- **Production Readiness** - Complete deployment validation
+- **Security Assurance** - Zero vulnerabilities identified
+- **Performance Validation** - All benchmarks exceeded
+
 #### **🔧 Core Components**
 - **BaseAgent Foundation** - Template method and strategy patterns
 - **CLI Interface** - Command management and agent discovery

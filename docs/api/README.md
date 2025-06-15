@@ -15,6 +15,18 @@ Complete technical documentation for the BaseAgent foundation class:
 - **Error Handling** - Comprehensive error management patterns
 - **Examples** - Working implementations and usage patterns
 
+### **🏛️ [Enhanced Cardano Client API](ENHANCED_CARDANO_CLIENT_API.md)** ✅ NEW
+Complete blockchain integration API documentation:
+
+- **Smart Contract Operations** - 5 enterprise patterns implementation
+- **Agent Registry** - Registration, discovery, and reputation management
+- **Service Marketplace** - Escrow creation, execution proofs, payment processing
+- **Revenue Sharing** - Token economics and community profit distribution
+- **Cross-Chain Integration** - Multi-blockchain support and bridge protocols
+- **Enterprise Compliance** - GDPR, KYC/AML, and regulatory frameworks
+- **Performance Specifications** - Throughput metrics and scalability guidelines
+- **Security Architecture** - Comprehensive vulnerability protection
+
 ### **🖥️ [CLI Reference](CLI_REFERENCE.md)**
 Comprehensive command-line interface documentation:
 
@@ -35,9 +47,13 @@ Comprehensive command-line interface documentation:
 - [BaseAgent API Reference](BASEAGENT_API_REFERENCE.md) - Foundation class
 - [CLI Reference](CLI_REFERENCE.md) - Command-line interface
 
+### **🏛️ Blockchain APIs**
+- [Enhanced Cardano Client API](ENHANCED_CARDANO_CLIENT_API.md) - Complete AI agent economy integration
+- [../integrations/NMKR Proof-of-Execution Guide](../integrations/NMKR_PROOF_OF_EXECUTION_GUIDE.md) - Blockchain verification
+
 ### **🔗 Integration APIs**
 - [../integrations/Steel Browser Integration](../integrations/STEEL_BROWSER_INTEGRATION.md) - Web automation
-- [../integrations/NMKR Proof-of-Execution Guide](../integrations/NMKR_PROOF_OF_EXECUTION_GUIDE.md) - Blockchain integration
+- [../integrations/MCP Integration Guide](../integrations/MCP_INTEGRATION_GUIDE.md) - Claude Desktop integration
 
 ---
 
