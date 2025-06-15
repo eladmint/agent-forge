@@ -1,0 +1,26 @@
+steps:
+  # Build the Next.js application
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['ci']
+
+  - name: 'node:18'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+
+  # Deploy to Cloud Storage
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: 
+      - 'storage'
+      - 'rsync'
+      - '-r'
+      - '-d'
+      - 'out/'
+      - 'gs://tokenhunter-457310-agent-forge-website/'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '1200s'

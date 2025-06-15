@@ -1,0 +1,176 @@
+{
+  "validation_type": "comprehensive_validation",
+  "summary": {
+    "total_checks": 24,
+    "passed_checks": 12,
+    "failed_checks": 12,
+    "success_rate": 50.0,
+    "all_passed": false
+  },
+  "results": [
+    {
+      "passed": false,
+      "message": "\u274c Missing mcp_server.py",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Missing mcp_auto_discovery.py",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Missing mcp_requirements.txt",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Found claude_desktop_config_example.json",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Found agents/ directory",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Missing core/ directory",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Found tests/ directory",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Installation incomplete: 3 missing files, 1 missing directories",
+      "severity": "critical",
+      "details": {
+        "missing_files": [
+          "mcp_server.py",
+          "mcp_auto_discovery.py",
+          "mcp_requirements.txt"
+        ],
+        "missing_dirs": [
+          "core"
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "message": "\u2705 fastmcp (2.8.0) installed",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 mcp (unknown) installed",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 aiohttp (3.12.12) installed",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 requests (2.31.0) installed",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 playwright (unknown) installed",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c python-dotenv not installed",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Missing 1 required packages",
+      "severity": "critical",
+      "details": {
+        "missing": [
+          "python-dotenv"
+        ],
+        "installed": {
+          "fastmcp": "2.8.0",
+          "mcp": "unknown",
+          "aiohttp": "3.12.12",
+          "requests": "2.31.0",
+          "playwright": "unknown"
+        }
+      }
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Python 3.12.7 (supported)",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u26a0\ufe0f Not running in virtual environment (recommended)",
+      "severity": "warning",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 PATH environment variable is set",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u26a0\ufe0f PYTHONPATH environment variable not set",
+      "severity": "warning",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Cannot import agent discovery module: No module named 'mcp_auto_discovery'",
+      "severity": "critical",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c Cannot import MCP server: No module named 'mcp_server'",
+      "severity": "critical",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Python command configured",
+      "severity": "info",
+      "details": null
+    },
+    {
+      "passed": false,
+      "message": "\u274c MCP server script not found: /Users/eladm/Projects/token/tokenhunter/agent_forge/mcp_server.py",
+      "severity": "error",
+      "details": null
+    },
+    {
+      "passed": true,
+      "message": "\u2705 Claude Desktop configuration is valid",
+      "severity": "info",
+      "details": null
+    }
+  ]
+}

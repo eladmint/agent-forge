@@ -14,8 +14,8 @@ from core.agents.base import BaseAgent, AsyncContextAgent
 from core.shared.web.browsers import SteelBrowserClient
 
 
-class TestableAgent(AsyncContextAgent):
-    """Test implementation of BaseAgent for testing."""
+class MockAgent(AsyncContextAgent):
+    """Mock implementation of BaseAgent for testing."""
     
     def __init__(self, name="test_agent", config=None, **kwargs):
         super().__init__(name, config)
@@ -37,7 +37,7 @@ class TestBaseAgentInitialization:
     
     def test_init_with_defaults(self):
         """Test agent initialization with default parameters."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         assert agent.name is not None
         assert agent.config == {}
@@ -48,7 +48,7 @@ class TestBaseAgentInitialization:
     def test_init_with_name_and_config(self):
         """Test agent initialization with custom name and config."""
         config = {"timeout": 30, "debug": True}
-        agent = TestableAgent(name="custom_agent", config=config)
+        agent = MockAgent(name="custom_agent", config=config)
         
         assert agent.name == "custom_agent"
         assert agent.config == config
@@ -56,7 +56,7 @@ class TestBaseAgentInitialization:
     
     def test_init_with_kwargs(self):
         """Test agent initialization with additional keyword arguments."""
-        agent = TestableAgent(url="https://example.com", task="test task")
+        agent = MockAgent(url="https://example.com", task="test task")
         
         assert agent.test_kwargs["url"] == "https://example.com"
         assert agent.test_kwargs["task"] == "test task"
@@ -69,7 +69,7 @@ class TestBaseAgentLifecycle:
     @pytest.mark.asyncio
     async def test_initialize_success(self, mock_browser_client):
         """Test successful agent initialization."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.shared.web.browsers.SteelBrowserClient', return_value=mock_browser_client):
             success = await agent.initialize()
@@ -82,7 +82,7 @@ class TestBaseAgentLifecycle:
     @pytest.mark.asyncio
     async def test_initialize_failure(self):
         """Test agent initialization failure."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         # Mock the _initialize method to fail
         with patch.object(agent, '_initialize', side_effect=Exception("Agent setup failed")):
@@ -95,7 +95,7 @@ class TestBaseAgentLifecycle:
     @pytest.mark.asyncio
     async def test_cleanup_success(self, mock_browser_client):
         """Test successful agent cleanup."""
-        agent = TestableAgent()
+        agent = MockAgent()
         agent.browser_client = mock_browser_client
         agent.is_initialized = True
         
@@ -106,7 +106,7 @@ class TestBaseAgentLifecycle:
     @pytest.mark.asyncio
     async def test_double_initialize(self, mock_browser_client):
         """Test that double initialization is handled correctly."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.shared.web.browsers.SteelBrowserClient', return_value=mock_browser_client):
             success1 = await agent.initialize()
@@ -118,7 +118,7 @@ class TestBaseAgentLifecycle:
     @pytest.mark.asyncio
     async def test_context_manager(self, mock_browser_client):
         """Test agent as async context manager."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.shared.web.browsers.SteelBrowserClient', return_value=mock_browser_client):
             async with agent as ctx_agent:
@@ -135,18 +135,18 @@ class TestBaseAgentStatus:
     
     def test_is_ready_when_not_initialized(self):
         """Test is_ready returns False when not initialized."""
-        agent = TestableAgent()
+        agent = MockAgent()
         assert agent.is_ready() is False
     
     def test_is_ready_when_initialized(self):
         """Test is_ready returns True when initialized."""
-        agent = TestableAgent()
+        agent = MockAgent()
         agent.is_initialized = True
         assert agent.is_ready() is True
     
     def test_get_status_not_initialized(self):
         """Test get_status when agent is not initialized."""
-        agent = TestableAgent()
+        agent = MockAgent()
         status = agent.get_status()
         
         assert status["name"] == agent.name
@@ -156,7 +156,7 @@ class TestBaseAgentStatus:
     
     def test_get_status_initialized(self, mock_browser_client):
         """Test get_status when agent is initialized."""
-        agent = TestableAgent()
+        agent = MockAgent()
         agent.is_initialized = True
         agent.browser_client = mock_browser_client
         
@@ -173,7 +173,7 @@ class TestBaseAgentRun:
     @pytest.mark.asyncio
     async def test_run_implementation(self):
         """Test that run method is implemented in concrete class."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         result = await agent.run("test_arg", test_kwarg="test_value")
         
@@ -185,7 +185,7 @@ class TestBaseAgentRun:
     @pytest.mark.asyncio
     async def test_run_with_custom_result(self):
         """Test run method with custom result."""
-        agent = TestableAgent()
+        agent = MockAgent()
         agent.run_result = {"custom": "result", "data": [1, 2, 3]}
         
         result = await agent.run()
@@ -205,7 +205,7 @@ class TestBaseAgentConfiguration:
             "debug": True,
             "api_key": "test_key"
         }
-        agent = TestableAgent(config=config)
+        agent = MockAgent(config=config)
         
         assert agent.config.get("timeout") == 30
         assert agent.config.get("retries") == 3
@@ -216,7 +216,7 @@ class TestBaseAgentConfiguration:
     
     def test_empty_config(self):
         """Test agent with empty configuration."""
-        agent = TestableAgent(config={})
+        agent = MockAgent(config={})
         
         assert agent.config == {}
         assert agent.config.get("any_key") is None
@@ -228,14 +228,14 @@ class TestBaseAgentLogging:
     
     def test_logger_creation(self):
         """Test that logger is created correctly."""
-        agent = TestableAgent(name="test_logger_agent")
+        agent = MockAgent(name="test_logger_agent")
         
         assert agent.logger is not None
         assert agent.logger.name == "agent_forge.test_logger_agent"
     
     def test_logger_usage(self):
         """Test basic logger usage."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         # Should not raise any exceptions
         agent.logger.info("Test info message")
@@ -250,7 +250,7 @@ class TestBaseAgentBrowserIntegration:
     @pytest.mark.asyncio
     async def test_browser_client_creation(self):
         """Test browser client creation during initialization."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.agents.base.SteelBrowserClient') as mock_client_class:
             mock_client = AsyncMock()
@@ -265,7 +265,7 @@ class TestBaseAgentBrowserIntegration:
     @pytest.mark.asyncio
     async def test_browser_client_cleanup(self):
         """Test browser client cleanup."""
-        agent = TestableAgent()
+        agent = MockAgent()
         mock_browser_client = AsyncMock()
         agent.browser_client = mock_browser_client
         agent.is_initialized = True
@@ -282,7 +282,7 @@ class TestBaseAgentErrorHandling:
     @pytest.mark.asyncio
     async def test_initialization_error_handling(self):
         """Test error handling during initialization."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.agents.base.SteelBrowserClient', side_effect=RuntimeError("Test error")):
             success = await agent.initialize()
@@ -293,7 +293,7 @@ class TestBaseAgentErrorHandling:
     @pytest.mark.asyncio
     async def test_cleanup_error_handling(self):
         """Test error handling during cleanup."""
-        agent = TestableAgent()
+        agent = MockAgent()
         mock_browser_client = AsyncMock()
         # Simulate cleanup error in the agent's _cleanup method
         agent.browser_client = mock_browser_client
@@ -313,7 +313,7 @@ class TestBaseAgentIntegration:
     @pytest.mark.asyncio
     async def test_full_lifecycle(self, mock_browser_client):
         """Test complete agent lifecycle."""
-        agent = TestableAgent(
+        agent = MockAgent(
             name="integration_test_agent",
             config={"test": True}
         )
@@ -341,7 +341,7 @@ class TestBaseAgentIntegration:
     @pytest.mark.asyncio
     async def test_context_manager_with_run(self, mock_browser_client):
         """Test using agent as context manager with run method."""
-        agent = TestableAgent()
+        agent = MockAgent()
         
         with patch('core.shared.web.browsers.SteelBrowserClient', return_value=mock_browser_client):
             async with agent:

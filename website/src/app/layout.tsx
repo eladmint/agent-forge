@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "AI agents",
     "Python framework",
     "browser automation",
-    "Steel Browser", 
+    "Steel Browser",
     "MCP integration",
     "web scraping",
     "artificial intelligence",
@@ -63,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark"> {/* Added 'dark' class here */}
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >

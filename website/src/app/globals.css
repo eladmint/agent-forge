@@ -4,43 +4,57 @@
 
 @layer base {
   :root {
-    /* Agent Forge Brand Variables */
-    --background: 254 254 254; /* forge-white */
-    --foreground: 54 69 79; /* charcoal-anvil */
-    --card: 254 254 254;
-    --card-foreground: 54 69 79;
-    --popover: 254 254 254;
-    --popover-foreground: 54 69 79;
-    --primary: 245 158 11; /* ancient-gold */
-    --primary-foreground: 254 254 254;
-    --secondary: 124 58 237; /* nuru-purple */
+    /* Agent Forge Brand Variables - Default Dark Mode */
+    --background: 26 26 26;
+    /* shadow-depth (dark) */
+    --foreground: 254 254 254;
+    /* white text on dark */
+    --card: 26 26 26;
+    --card-foreground: 254 254 254;
+    --popover: 26 26 26;
+    --popover-foreground: 254 254 254;
+    --primary: 245 158 11;
+    /* ancient-gold */
+    --primary-foreground: 26 26 26;
+    --secondary: 124 58 237;
+    /* nuru-purple */
     --secondary-foreground: 254 254 254;
-    --muted: 247 247 247; /* ancient-stone */
-    --muted-foreground: 112 128 144; /* steel-wisdom */
-    --accent: 205 127 50; /* ancient-bronze */
+    --muted: 54 69 79;
+    /* charcoal-anvil */
+    --muted-foreground: 112 128 144;
+    /* steel-wisdom */
+    --accent: 205 127 50;
+    /* ancient-bronze */
     --accent-foreground: 254 254 254;
-    --destructive: 239 68 68;
+    --destructive: 220 38 38;
     --destructive-foreground: 254 254 254;
-    --border: 229 231 235;
-    --input: 229 231 235;
-    --ring: 245 158 11; /* ancient-gold */
+    --border: 54 69 79;
+    --input: 54 69 79;
+    --ring: 245 158 11;
+    /* ancient-gold */
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 26 26 26; /* shadow-depth */
+    --background: 26 26 26;
+    /* shadow-depth */
     --foreground: 254 254 254;
     --card: 26 26 26;
     --card-foreground: 254 254 254;
     --popover: 26 26 26;
     --popover-foreground: 254 254 254;
-    --primary: 245 158 11; /* ancient-gold */
+    --primary: 245 158 11;
+    /* ancient-gold */
     --primary-foreground: 26 26 26;
-    --secondary: 124 58 237; /* nuru-purple */
+    --secondary: 124 58 237;
+    /* nuru-purple */
     --secondary-foreground: 254 254 254;
-    --muted: 54 69 79; /* charcoal-anvil */
-    --muted-foreground: 112 128 144; /* steel-wisdom */
-    --accent: 205 127 50; /* ancient-bronze */
+    --muted: 54 69 79;
+    /* charcoal-anvil */
+    --muted-foreground: 112 128 144;
+    /* steel-wisdom */
+    --accent: 205 127 50;
+    /* ancient-bronze */
     --accent-foreground: 254 254 254;
     --destructive: 220 38 38;
     --destructive-foreground: 254 254 254;
@@ -54,17 +68,38 @@
   * {
     border-color: hsl(var(--border));
   }
-  
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  /* Force dark mode by default */
+  html.dark body {
+    background-color: hsl(26 26 26);
+    color: hsl(254 254 254);
+  }
+
+  /* Ensure all major elements use dark background */
+  html.dark,
+  html.dark body,
+  html.dark main,
+  html.dark section,
+  html.dark div {
+    background-color: hsl(26 26 26) !important;
+    color: hsl(254 254 254);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 600;
   }
-  
+
   code {
     font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Consolas, monospace;
   }
@@ -78,16 +113,17 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+
     /* Fallback for browsers that don't support background-clip: text */
     @supports not (background-clip: text) {
       color: #F59E0B;
     }
   }
-  
+
   .text-high-contrast {
     color: #1a1a1a;
   }
-  
+
   .bg-white-solid {
     background-color: #ffffff;
   }
@@ -95,22 +131,37 @@
 
 /* Forge-themed animations */
 @keyframes forge-glow {
-  0%, 100% { 
+
+  0%,
+  100% {
     box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
   }
-  50% { 
+
+  50% {
     box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
   }
 }
 
 @keyframes ancient-fade {
-  0% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes ember-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .forge-glow {

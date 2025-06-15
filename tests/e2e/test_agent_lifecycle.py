@@ -12,6 +12,31 @@ from pathlib import Path
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
+from core.agents.base import AsyncContextAgent
+
+
+class TestLifecycleAgent(AsyncContextAgent):
+    """Test agent implementation for lifecycle testing."""
+    
+    def __init__(self, name="test_agent", config=None):
+        super().__init__(name, config)
+        self.task_results = []
+        
+    async def run(self, *args, **kwargs):
+        """Test run implementation."""
+        return {"status": "success", "agent": self.name}
+    
+    async def navigate(self, url):
+        """Mock navigation method."""
+        if hasattr(self, 'browser_client') and self.browser_client:
+            return await self.browser_client.navigate(url)
+        return {"status": "success", "url": url}
+    
+    async def extract_data(self, selector):
+        """Mock data extraction method."""
+        if hasattr(self, 'browser_client') and self.browser_client:
+            return await self.browser_client.extract_data(selector)
+        return {"data": [], "metadata": {}}
 
 
 class TestAgentLifecycleE2E:
@@ -103,15 +128,15 @@ class TestAgentLifecycleE2E:
         """Test complete agent lifecycle from creation to cleanup."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
         from core.blockchain.nmkr_integration import NMKRProofGenerator
         
         # Phase 1: Agent Creation and Initialization
-        agent = AsyncContextAgent(
+        agent = TestLifecycleAgent(
             name=config["agent_id"],
-            config=config,
-            browser_client=mock_external_services["browser"]
+            config=config
         )
+        # Set browser client for testing
+        agent.browser_client = mock_external_services["browser"]
         
         # Initialize agent
         await agent.initialize()
@@ -203,7 +228,7 @@ class TestAgentLifecycleE2E:
         """Test complete multi-page scraping workflow."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
+        from core.agents.base import AsyncContextAgent
         
         # Configure browser mock for multi-page scenario
         urls = [
@@ -289,7 +314,7 @@ class TestAgentLifecycleE2E:
         """Test agent error recovery and resilience."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
+        from core.agents.base import AsyncContextAgent
         
         # Configure mock to simulate errors and recovery
         call_count = {"navigate": 0, "extract": 0}
@@ -375,7 +400,7 @@ class TestAgentLifecycleE2E:
         """Test complete blockchain integration workflow."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
+        from core.agents.base import AsyncContextAgent
         from core.blockchain.nmkr_integration import NMKRProofGenerator
         from core.blockchain.masumi_integration import MasumiAgentRegistrar
         
@@ -476,7 +501,7 @@ class TestAgentLifecycleE2E:
         """Test workflow with multiple concurrent agents."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
+        from core.agents.base import AsyncContextAgent
         
         # Create multiple agent configurations
         agent_configs = []
@@ -586,7 +611,7 @@ class TestAgentLifecycleE2E:
         """Test agent state persistence and recovery."""
         workspace, config = temp_workspace
         
-        from core.agents.base_agent import AsyncContextAgent
+        from core.agents.base import AsyncContextAgent
         
         # Phase 1: Create agent and execute partial workflow
         agent = AsyncContextAgent(

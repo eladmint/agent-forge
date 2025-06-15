@@ -11,6 +11,7 @@ Tests the performance characteristics of:
 """
 
 import pytest
+import pytest_asyncio
 import asyncio
 import time
 import psutil
@@ -149,10 +150,10 @@ class TestCardanoBlockchainPerformance:
         """Create performance metrics collector."""
         return PerformanceMetrics()
     
-    @pytest.fixture
+    @pytest_asyncio.fixture
     async def optimized_client_setup(self, performance_config):
         """Setup optimized client for performance testing."""
-        with patch('src.core.blockchain.cardano_enhanced_client.NMKRClient') as mock_nmkr:
+        with patch('core.blockchain.cardano_enhanced_client.NMKRClient') as mock_nmkr:
             # Setup high-performance mock client
             mock_nmkr_instance = AsyncMock()
             mock_nmkr.return_value = mock_nmkr_instance

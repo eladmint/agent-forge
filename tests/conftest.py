@@ -12,19 +12,14 @@ from typing import Dict, Any
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent
+src_root = project_root / "src"
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(src_root))
 
 # Import framework components
 from core.agents.base import BaseAgent
 from core.shared.web.browsers import SteelBrowserClient
 
-
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create an instance of the default event loop for the test session."""
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
 
 
 @pytest.fixture
