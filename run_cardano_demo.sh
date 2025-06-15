@@ -26,7 +26,7 @@ echo -e "${BLUE}=================================${NC}"
 echo
 
 # Check if we're in the right directory
-if [ ! -f "examples/cardano_enhanced_agent.py" ]; then
+if [ ! -f "examples/premium/cardano_enhanced_agent.py" ]; then
     echo -e "${RED}❌ Error: Please run this script from the agent_forge root directory${NC}"
     echo -e "${YELLOW}💡 Solution: cd agent_forge && ./run_cardano_demo.sh${NC}"
     exit 1
@@ -41,7 +41,7 @@ fi
 
 # Check if Enhanced Cardano Agent is available
 echo -e "${BLUE}🔍 Checking Enhanced Cardano Agent availability...${NC}"
-if python -c "from examples.cardano_enhanced_agent import CardanoEnhancedAgent" 2>/dev/null; then
+if python -c "import sys; sys.path.insert(0, 'src'); from examples.premium.cardano_enhanced_agent import CardanoEnhancedAgent" 2>/dev/null; then
     echo -e "${GREEN}✅ Enhanced Cardano Agent available${NC}"
 else
     echo -e "${RED}❌ Enhanced Cardano Agent not found${NC}"

@@ -5,61 +5,56 @@
 @layer base {
   :root {
     /* Agent Forge Brand Variables - Default Dark Mode */
-    --background: 26 26 26;
-    /* shadow-depth (dark) */
-    --foreground: 254 254 254;
-    /* white text on dark */
-    --card: 26 26 26;
-    --card-foreground: 254 254 254;
-    --popover: 26 26 26;
-    --popover-foreground: 254 254 254;
+    --background: 2 6 23;
+    /* Deep navy blue */
+    --foreground: 248 250 252;
+    --card: 15 23 42;
+    --card-foreground: 248 250 252;
+    --popover: 15 23 42;
+    --popover-foreground: 248 250 252;
     --primary: 245 158 11;
     /* ancient-gold */
-    --primary-foreground: 26 26 26;
+    --primary-foreground: 2 6 23;
     --secondary: 124 58 237;
     /* nuru-purple */
-    --secondary-foreground: 254 254 254;
-    --muted: 54 69 79;
-    /* charcoal-anvil */
-    --muted-foreground: 112 128 144;
-    /* steel-wisdom */
+    --secondary-foreground: 248 250 252;
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
     --accent: 205 127 50;
     /* ancient-bronze */
-    --accent-foreground: 254 254 254;
-    --destructive: 220 38 38;
-    --destructive-foreground: 254 254 254;
-    --border: 54 69 79;
-    --input: 54 69 79;
+    --accent-foreground: 248 250 252;
+    --destructive: 239 68 68;
+    --destructive-foreground: 248 250 252;
+    --border: 30 41 59;
+    --input: 30 41 59;
     --ring: 245 158 11;
     /* ancient-gold */
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 26 26 26;
-    /* shadow-depth */
-    --foreground: 254 254 254;
-    --card: 26 26 26;
-    --card-foreground: 254 254 254;
-    --popover: 26 26 26;
-    --popover-foreground: 254 254 254;
+    --background: 2 6 23;
+    /* Deep navy blue */
+    --foreground: 248 250 252;
+    --card: 15 23 42;
+    --card-foreground: 248 250 252;
+    --popover: 15 23 42;
+    --popover-foreground: 248 250 252;
     --primary: 245 158 11;
     /* ancient-gold */
-    --primary-foreground: 26 26 26;
+    --primary-foreground: 2 6 23;
     --secondary: 124 58 237;
     /* nuru-purple */
-    --secondary-foreground: 254 254 254;
-    --muted: 54 69 79;
-    /* charcoal-anvil */
-    --muted-foreground: 112 128 144;
-    /* steel-wisdom */
+    --secondary-foreground: 248 250 252;
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
     --accent: 205 127 50;
     /* ancient-bronze */
-    --accent-foreground: 254 254 254;
-    --destructive: 220 38 38;
-    --destructive-foreground: 254 254 254;
-    --border: 54 69 79;
-    --input: 54 69 79;
+    --accent-foreground: 248 250 252;
+    --destructive: 239 68 68;
+    --destructive-foreground: 248 250 252;
+    --border: 30 41 59;
+    --input: 30 41 59;
     --ring: 245 158 11;
   }
 }
@@ -75,21 +70,49 @@
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
 
-  /* Force dark mode by default */
-  html.dark body {
-    background-color: hsl(26 26 26);
-    color: hsl(254 254 254);
+  /* Force dark mode globally */
+  html,
+  body {
+    background-color: #020617 !important;
+    color: #f8fafc !important;
   }
 
-  /* Ensure all major elements use dark background */
-  html.dark,
-  html.dark body,
-  html.dark main,
-  html.dark section,
-  html.dark div {
-    background-color: hsl(26 26 26) !important;
-    color: hsl(254 254 254);
+  /* Dark mode for all content */
+  html.dark *,
+  html.dark body *,
+  html.dark main *,
+  html.dark section *,
+  html.dark div *,
+  html.dark header *,
+  html.dark nav *,
+  html.dark footer *,
+  html.dark article * {
+    background-color: transparent !important;
+    color: #f8fafc !important;
   }
+
+  /* Ensure headings are light */
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark h5,
+  html.dark h6 {
+    color: #f8fafc !important;
+  }
+
+  /* Links should be visible */
+  html.dark a {
+    color: #f59e0b !important; /* ancient-gold */
+  }
+
+  /* Button styling for dark mode */
+  html.dark button {
+    background-color: #f59e0b !important;
+    color: #020617 !important;
+    border: none !important;
+  }
+
 
   h1,
   h2,
@@ -105,14 +128,16 @@
   }
 }
 
-/* Fix gradient text rendering issues */
+/* Modern design utilities */
 @layer utilities {
   .gradient-text-ancient-gold {
-    background: linear-gradient(90deg, #F59E0B 0%, #7C3AED 50%, #CD7F32 100%);
+    background: linear-gradient(135deg, #F59E0B 0%, #7C3AED 50%, #CD7F32 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease-in-out infinite;
 
     /* Fallback for browsers that don't support background-clip: text */
     @supports not (background-clip: text) {
@@ -121,11 +146,36 @@
   }
 
   .text-high-contrast {
-    color: #1a1a1a;
+    color: hsl(var(--foreground));
   }
 
-  .bg-white-solid {
-    background-color: #ffffff;
+
+  .bg-gradient-radial {
+    background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+  }
+
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(rgba(245, 158, 11, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245, 158, 11, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .glass-effect {
+    backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass-effect {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .hero-glow {
+    box-shadow:
+      0 0 50px rgba(245, 158, 11, 0.3),
+      0 0 100px rgba(124, 58, 237, 0.2);
   }
 }
 
@@ -161,6 +211,18 @@
 
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
   }
 }
 

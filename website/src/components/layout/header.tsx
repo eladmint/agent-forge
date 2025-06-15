@@ -17,7 +17,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -46,9 +46,9 @@ export function Header() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="sm" asChild>
-              <Link 
-                href="https://github.com/agent-forge" 
-                target="_blank" 
+              <Link
+                href="https://github.com/agent-forge"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2"
               >
@@ -85,8 +85,8 @@ export function Header() {
         <div
           className={cn(
             "md:hidden transition-all duration-300 ease-in-out",
-            mobileMenuOpen 
-              ? "max-h-96 opacity-100 pb-4" 
+            mobileMenuOpen
+              ? "max-h-96 opacity-100 pb-4"
               : "max-h-0 opacity-0 overflow-hidden"
           )}
         >
@@ -103,9 +103,9 @@ export function Header() {
             ))}
             <div className="flex flex-col space-y-2 px-4 pt-2">
               <Button variant="outline" size="sm" asChild>
-                <Link 
-                  href="https://github.com/agent-forge" 
-                  target="_blank" 
+                <Link
+                  href="https://github.com/agent-forge"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center space-x-2"
                 >
