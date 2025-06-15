@@ -1,0 +1,239 @@
+# Multi-Chain Configuration for Othentic AVS
+# Configuration for cross-chain operations and bridge protocols
+
+multi_chain:
+  # Supported networks
+  networks:
+    ethereum:
+      name: "Ethereum Mainnet"
+      chain_id: 1
+      rpc_url: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+      explorer_url: "https://etherscan.io"
+      native_token: "ETH"
+      decimals: 18
+      gas_settings:
+        gas_limit: 21000
+        gas_price_strategy: "eip1559"
+        priority_fee: 2000000000  # 2 gwei
+        max_fee: 100000000000     # 100 gwei
+      
+    cardano:
+      name: "Cardano Mainnet"
+      network_magic: 764824073
+      api_url: "https://cardano-mainnet.blockfrost.io/api/v0"
+      explorer_url: "https://cardanoscan.io"
+      native_token: "ADA"
+      decimals: 6
+      project_id: "${BLOCKFROST_PROJECT_ID}"
+      
+    solana:
+      name: "Solana Mainnet"
+      cluster: "mainnet-beta"
+      rpc_url: "https://api.mainnet-beta.solana.com"
+      explorer_url: "https://solscan.io"
+      native_token: "SOL"
+      decimals: 9
+      commitment: "confirmed"
+      
+    polygon:
+      name: "Polygon Mainnet"
+      chain_id: 137
+      rpc_url: "https://polygon-rpc.com"
+      explorer_url: "https://polygonscan.com"
+      native_token: "MATIC"
+      decimals: 18
+      gas_settings:
+        gas_limit: 21000
+        gas_price: 30000000000    # 30 gwei
+        
+    avalanche:
+      name: "Avalanche C-Chain"
+      chain_id: 43114
+      rpc_url: "https://api.avax.network/ext/bc/C/rpc"
+      explorer_url: "https://snowtrace.io"
+      native_token: "AVAX"
+      decimals: 18
+      
+    fantom:
+      name: "Fantom Opera"
+      chain_id: 250
+      rpc_url: "https://rpcapi.fantom.network"
+      explorer_url: "https://ftmscan.com"
+      native_token: "FTM"
+      decimals: 18
+      
+    binance_smart_chain:
+      name: "Binance Smart Chain"
+      chain_id: 56
+      rpc_url: "https://bsc-dataseed1.binance.org"
+      explorer_url: "https://bscscan.com"
+      native_token: "BNB"
+      decimals: 18
+      
+    arbitrum:
+      name: "Arbitrum One"
+      chain_id: 42161
+      rpc_url: "https://arb1.arbitrum.io/rpc"
+      explorer_url: "https://arbiscan.io"
+      native_token: "ETH"
+      decimals: 18
+
+  # Cross-chain bridge protocols
+  bridges:
+    othentic_bridge:
+      name: "Othentic Native Bridge"
+      supported_chains:
+        - "ethereum"
+        - "polygon"
+        - "avalanche"
+        - "arbitrum"
+      contracts:
+        ethereum: "0x..."
+        polygon: "0x..."
+        avalanche: "0x..."
+        arbitrum: "0x..."
+      fees:
+        fixed_fee: 0.001  # ETH equivalent
+        percentage_fee: 0.001  # 0.1%
+        
+    layer_zero:
+      name: "LayerZero Protocol"
+      endpoint_ids:
+        ethereum: 101
+        avalanche: 106
+        polygon: 109
+        arbitrum: 110
+        fantom: 112
+        binance_smart_chain: 102
+      contracts:
+        ethereum: "0x..."
+        avalanche: "0x..."
+        polygon: "0x..."
+        arbitrum: "0x..."
+        fantom: "0x..."
+        binance_smart_chain: "0x..."
+        
+    wormhole:
+      name: "Wormhole Bridge"
+      guardian_set_index: 3
+      consistency_levels:
+        ethereum: 15
+        solana: 1
+        polygon: 512
+        avalanche: 15
+        fantom: 15
+        binance_smart_chain: 15
+      contracts:
+        ethereum: "0x..."
+        solana: "..."
+        polygon: "0x..."
+        avalanche: "0x..."
+        fantom: "0x..."
+        binance_smart_chain: "0x..."
+
+  # Asset mappings across chains
+  asset_mappings:
+    usdc:
+      ethereum: "0xA0b86a33E6441d0ad60e6ecf15EbD3C6B1e31Bc5"
+      polygon: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+      avalanche: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E"
+      arbitrum: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
+      solana: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+      
+    usdt:
+      ethereum: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+      polygon: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+      avalanche: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"
+      arbitrum: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+      binance_smart_chain: "0x55d398326f99059fF775485246999027B3197955"
+      
+    eth:
+      ethereum: "native"
+      polygon: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+      avalanche: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"
+      arbitrum: "native"
+
+  # Transaction configuration
+  transactions:
+    confirmation_blocks:
+      ethereum: 12
+      cardano: 5
+      solana: 32
+      polygon: 20
+      avalanche: 5
+      fantom: 5
+      binance_smart_chain: 10
+      arbitrum: 20
+      
+    timeout_periods:
+      ethereum: 900     # 15 minutes
+      cardano: 1200     # 20 minutes
+      solana: 300       # 5 minutes
+      polygon: 600      # 10 minutes
+      avalanche: 300    # 5 minutes
+      fantom: 300       # 5 minutes
+      binance_smart_chain: 180  # 3 minutes
+      arbitrum: 600     # 10 minutes
+      
+    retry_settings:
+      max_retries: 3
+      retry_delay: 30   # seconds
+      backoff_multiplier: 2
+
+  # Security settings
+  security:
+    multi_sig_thresholds:
+      ethereum: 3
+      cardano: 2
+      solana: 2
+      polygon: 2
+      avalanche: 2
+      fantom: 2
+      binance_smart_chain: 2
+      arbitrum: 2
+      
+    daily_limits:  # In USD equivalent
+      per_transaction: 1000000   # $1M
+      per_agent: 10000000        # $10M
+      global: 100000000          # $100M
+      
+    emergency_pause:
+      enabled: true
+      pause_guardians:
+        - "0x..."  # Guardian addresses
+        - "0x..."
+        - "0x..."
+
+# Development configuration
+development:
+  use_testnets: true
+  networks:
+    ethereum:
+      rpc_url: "https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+      chain_id: 5
+    polygon:
+      rpc_url: "https://matic-mumbai.chainstacklabs.com"
+      chain_id: 80001
+    avalanche:
+      rpc_url: "https://api.avax-test.network/ext/bc/C/rpc"
+      chain_id: 43113
+
+# Production hardening
+production:
+  rate_limiting:
+    requests_per_minute: 100
+    burst_allowance: 20
+    
+  monitoring:
+    health_check_interval: 30  # seconds
+    alert_thresholds:
+      failed_transactions: 5   # per hour
+      bridge_downtime: 300     # seconds
+      
+  backup_rpcs:
+    ethereum:
+      - "https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}"
+      - "https://ethereum.publicnode.com"
+    polygon:
+      - "https://polygon-mainnet.infura.io/v3/${INFURA_PROJECT_ID}"
+      - "https://polygon.rpc.blxrbdn.com"

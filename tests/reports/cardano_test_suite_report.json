@@ -1,0 +1,30 @@
+{
+  "cardano_test_suite": {
+    "timestamp": "2025-06-15T08:05:26.787449",
+    "total_duration": 0.7874538898468018,
+    "categories_tested": 1,
+    "successful_categories": 1,
+    "failed_categories": 0,
+    "overall_success": true,
+    "test_results": {
+      "unit": {
+        "category": "unit",
+        "name": "Unit Tests",
+        "path": "tests/unit/test_cardano_enhanced_client.py",
+        "duration": 0.6451761722564697,
+        "return_code": 0,
+        "success": true,
+        "stdout": "============================= test session starts ==============================\ncollecting ... collected 29 items\n\ntests/unit/test_cardano_enhanced_client.py::TestAgentProfile::test_agent_profile_creation PASSED [  3%]\ntests/unit/test_cardano_enhanced_client.py::TestAgentProfile::test_agent_profile_with_custom_timestamp PASSED [  6%]\ntests/unit/test_cardano_enhanced_client.py::TestServiceRequest::test_service_request_creation PASSED [ 10%]\ntests/unit/test_cardano_enhanced_client.py::TestServiceRequest::test_service_request_hash_generation PASSED [ 13%]\ntests/unit/test_cardano_enhanced_client.py::TestRevenueShare::test_revenue_share_creation PASSED [ 17%]\ntests/unit/test_cardano_enhanced_client.py::TestRevenueShare::test_calculate_rewards PASSED [ 20%]\ntests/unit/test_cardano_enhanced_client.py::TestRevenueShare::test_calculate_rewards_zero_tokens PASSED [ 24%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_client_initialization PASSED [ 27%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_get_minimum_stake PASSED [ 31%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_calculate_stake_tier PASSED [ 34%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_register_agent_success PASSED [ 37%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_register_agent_insufficient_stake PASSED [ 41%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_find_agents PASSED [ 44%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_find_agents_no_match PASSED [ 48%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_create_escrow_success PASSED [ 51%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_release_escrow_success PASSED [ 55%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_release_escrow_not_found PASSED [ 58%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_distribute_revenue_success PASSED [ 62%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_distribute_revenue_no_participants PASSED [ 65%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_claim_rewards_success PASSED [ 68%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_claim_rewards_no_rewards PASSED [ 72%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_claim_rewards_not_found PASSED [ 75%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_verify_execution_proof_valid PASSED [ 79%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_verify_execution_proof_invalid_agent PASSED [ 82%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_verify_execution_proof_task_not_completed PASSED [ 86%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_register_cross_chain_service_success PASSED [ 89%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_register_cross_chain_service_agent_not_found PASSED [ 93%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_update_agent_reputation PASSED [ 96%]\ntests/unit/test_cardano_enhanced_client.py::TestEnhancedCardanoClient::test_get_current_block_height PASSED [100%]\n\n======================== 29 passed, 1 warning in 0.05s =========================\n",
+        "stderr": "/opt/anaconda3/lib/python3.12/site-packages/pytest_asyncio/plugin.py:217: PytestDeprecationWarning: The configuration option \"asyncio_default_fixture_loop_scope\" is unset.\nThe event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\"\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n",
+        "importance": "critical",
+        "tests_passed": 29,
+        "tests_failed": 0
+      }
+    },
+    "environment": {
+      "python_version": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 08:22:19) [Clang 14.0.6 ]",
+      "working_directory": "/Users/eladm/Projects/token/tokenhunter/agent_forge",
+      "test_runner_version": "1.0.0"
+    }
+  }
+}

@@ -1,0 +1,157 @@
+# Othentic AVS Configuration
+# Configuration for all Actively Validated Services
+
+othentic:
+  # Base configuration
+  api_key: "${OTHENTIC_API_KEY}"
+  agent_id: "${AGENT_ID}"
+  base_url: "https://api.othentic.xyz"
+  
+  # Network configuration
+  networks:
+    eigenlayer:
+      endpoint: "https://api.eigenlayer.xyz"
+      contract_address: "0x..."
+    
+    ethereum:
+      rpc_url: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+      chain_id: 1
+      
+    cardano:
+      endpoint: "https://cardano-mainnet.blockfrost.io/api/v0"
+      project_id: "${BLOCKFROST_PROJECT_ID}"
+      
+    solana:
+      endpoint: "https://api.mainnet-beta.solana.com"
+      commitment: "confirmed"
+      
+    polygon:
+      rpc_url: "https://polygon-rpc.com"
+      chain_id: 137
+      
+    avalanche:
+      rpc_url: "https://api.avax.network/ext/bc/C/rpc"
+      chain_id: 43114
+      
+    fantom:
+      rpc_url: "https://rpcapi.fantom.network"
+      chain_id: 250
+      
+    binance_smart_chain:
+      rpc_url: "https://bsc-dataseed1.binance.org"
+      chain_id: 56
+      
+    arbitrum:
+      rpc_url: "https://arb1.arbitrum.io/rpc"
+      chain_id: 42161
+
+  # AVS Service contracts
+  contracts:
+    agent_registry:
+      address: "0x..."
+      abi_path: "contracts/agent_registry.json"
+      
+    payment_processor:
+      address: "0x..."
+      abi_path: "contracts/payment_processor.json"
+      
+    reputation_validation:
+      address: "0x..."
+      abi_path: "contracts/reputation_validation.json"
+      
+    enterprise_compliance:
+      address: "0x..."
+      abi_path: "contracts/enterprise_compliance.json"
+      
+    cross_chain_bridge:
+      address: "0x..."
+      abi_path: "contracts/cross_chain_bridge.json"
+
+  # Staking configuration
+  staking:
+    min_stake_amount: 32.0  # ETH
+    slash_threshold: 0.1
+    reward_rate: 0.05
+    unstaking_period: 604800  # 7 days in seconds
+    
+  # Validation settings
+  validation:
+    voting_period: 3600  # 1 hour in seconds
+    quorum_threshold: 0.51
+    consensus_threshold: 0.67
+    
+  # Payment settings
+  payments:
+    supported_methods:
+      - "ethereum"
+      - "bitcoin" 
+      - "cardano_ada"
+      - "solana_sol"
+      - "polygon_matic"
+      - "usdc"
+      - "usdt"
+      - "dai"
+      - "stripe"
+      - "paypal"
+      - "bank_transfer"
+      - "credit_card"
+      
+    escrow:
+      default_timeout: 7200  # 2 hours
+      max_timeout: 604800   # 7 days
+      
+    fees:
+      platform_fee: 0.025  # 2.5%
+      gas_buffer: 1.2      # 20% gas buffer
+      
+  # Reputation settings
+  reputation:
+    tiers:
+      unknown: 0.0
+      novice: 0.2
+      apprentice: 0.4
+      skilled: 0.6
+      expert: 0.8
+      master: 0.95
+      
+    weights:
+      task_completion: 0.4
+      fraud_reports: -0.3
+      stake_amount: 0.1
+      validation_accuracy: 0.2
+      peer_review: 0.3
+      
+  # Compliance frameworks
+  compliance:
+    supported_frameworks:
+      - "gdpr"
+      - "ccpa"
+      - "sox"
+      - "hipaa"
+      - "pci_dss"
+      - "iso_27001"
+      - "soc_2"
+      - "regkyc"
+      
+    audit_intervals:
+      gdpr: 31536000      # 1 year
+      ccpa: 31536000      # 1 year
+      sox: 7776000        # 3 months
+      hipaa: 31536000     # 1 year
+      pci_dss: 31536000   # 1 year
+      iso_27001: 31536000 # 1 year
+      soc_2: 31536000     # 1 year
+      regkyc: 15552000    # 6 months
+
+# Development/Testing overrides
+development:
+  base_url: "http://localhost:8080"
+  use_mock_contracts: true
+  skip_validation: false
+  
+# Production optimizations
+production:
+  connection_pool_size: 100
+  request_timeout: 30
+  retry_attempts: 3
+  retry_delay: 1.0

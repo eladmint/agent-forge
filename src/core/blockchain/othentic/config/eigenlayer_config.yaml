@@ -1,0 +1,143 @@
+# EigenLayer Configuration for Othentic AVS
+# Configuration for EigenLayer operator and restaking integration
+
+eigenlayer:
+  # Operator configuration
+  operator:
+    address: "${EIGENLAYER_OPERATOR_ADDRESS}"
+    private_key: "${EIGENLAYER_OPERATOR_PRIVATE_KEY}"  # Should be encrypted/secured
+    metadata_uri: "https://metadata.othentic.xyz/operators/${OPERATOR_ID}"
+    
+  # Strategy configuration
+  strategies:
+    # Native ETH restaking
+    beacon_chain_eth:
+      address: "0x..."
+      name: "Beacon Chain ETH"
+      min_stake: 32.0
+      
+    # LST strategies
+    steth:
+      address: "0x..."
+      name: "Liquid Staked ETH (stETH)"
+      token_address: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
+      min_stake: 1.0
+      
+    reth:
+      address: "0x..."
+      name: "Rocket Pool ETH (rETH)"
+      token_address: "0xae78736Cd615f374D3085123A210448E74Fc6393"
+      min_stake: 1.0
+      
+    cbeth:
+      address: "0x..."
+      name: "Coinbase Staked ETH (cbETH)"
+      token_address: "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704"
+      min_stake: 1.0
+
+  # AVS registration
+  avs:
+    registry_coordinator: "0x..."
+    operator_state_retriever: "0x..."
+    stake_registry: "0x..."
+    
+    # Registration parameters
+    registration:
+      quorum_numbers: [0, 1]  # Which quorums to participate in
+      socket: "socket.othentic.xyz:443"
+      
+  # Slashing configuration
+  slashing:
+    parameters:
+      slashing_contract: "0x..."
+      veto_committee: "0x..."
+      
+    conditions:
+      # Agent Registry AVS slashing conditions
+      agent_registry:
+        false_registration: 0.1   # 10% slash
+        malicious_behavior: 0.5   # 50% slash
+        
+      # Payment AVS slashing conditions  
+      payment_processor:
+        payment_fraud: 0.3        # 30% slash
+        escrow_manipulation: 0.5  # 50% slash
+        
+      # Reputation AVS slashing conditions
+      reputation_validation:
+        false_validation: 0.2     # 20% slash
+        coordination_attack: 1.0  # 100% slash (full slash)
+        
+      # Compliance AVS slashing conditions
+      compliance:
+        false_compliance: 0.3     # 30% slash
+        data_breach: 0.8          # 80% slash
+        
+      # Cross-chain AVS slashing conditions
+      cross_chain:
+        bridge_fraud: 0.5         # 50% slash
+        asset_theft: 1.0          # 100% slash
+
+  # Rewards configuration
+  rewards:
+    distribution_contract: "0x..."
+    
+    # Reward rates (annual percentage)
+    rates:
+      agent_registry: 0.03      # 3% APR
+      payment_processor: 0.05   # 5% APR
+      reputation_validation: 0.04 # 4% APR
+      compliance: 0.06          # 6% APR
+      cross_chain: 0.07         # 7% APR
+      
+    # Distribution schedule
+    distribution:
+      frequency: 86400          # Daily (seconds)
+      claim_period: 2592000     # 30 days to claim
+      
+  # Network configuration
+  network:
+    ethereum:
+      rpc_url: "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+      chain_id: 1
+      gas_price_strategy: "medium"
+      
+    # Core contracts
+    contracts:
+      delegation_manager: "0x..."
+      strategy_manager: "0x..."
+      slasher: "0x..."
+      eigen_pod_manager: "0x..."
+      
+  # Monitoring and alerts
+  monitoring:
+    metrics_endpoint: "https://metrics.othentic.xyz"
+    alert_webhook: "${ALERT_WEBHOOK_URL}"
+    
+    thresholds:
+      stake_below_minimum: true
+      high_slash_risk: 0.05     # Alert if slash risk > 5%
+      operator_performance: 0.95 # Alert if performance < 95%
+      
+  # Security settings
+  security:
+    operator_key_rotation: 7776000  # 3 months
+    metadata_update_cooldown: 86400 # 1 day
+    emergency_pause_enabled: true
+
+# Development configuration
+development:
+  network: "goerli"
+  contracts:
+    delegation_manager: "0x..."  # Goerli testnet addresses
+    strategy_manager: "0x..."
+    slasher: "0x..."
+    eigen_pod_manager: "0x..."
+    
+# Production security hardening
+production:
+  operator_key_storage: "hsm"  # Hardware Security Module
+  multi_sig_threshold: 2
+  emergency_contacts:
+    - "security@othentic.xyz"
+    - "${OPERATOR_CONTACT_EMAIL}"
